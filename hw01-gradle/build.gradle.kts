@@ -1,11 +1,11 @@
 import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
-    id ("com.github.johnrengelman.shadow")
+    id("com.github.johnrengelman.shadow")
 }
 
 dependencies {
-    implementation ("com.google.guava:guava")
+    implementation("com.google.guava:guava")
 }
 
 tasks {
@@ -14,7 +14,7 @@ tasks {
         archiveVersion.set("0.1")
         archiveClassifier.set("")
         manifest {
-            attributes(mapOf("Main-Class" to "ru.otus.App"))
+            attributes(mapOf("Main-Class" to "ru.sinvic.App"))
         }
     }
 
