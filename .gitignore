@@ -37,3 +37,6 @@ out
 *.ipr
 *.idea
 
+# mac
+.DS_Store
+
