@@ -10,24 +10,20 @@ public class CustomerService {
 
     public Map.Entry<Customer, String> getSmallest() {
         Map.Entry<Customer, String> smallestEntry = customers.firstEntry();
-        Map.Entry<Customer, String> smallestEntryCopy = null;
-
-        if (smallestEntry != null) {
-            smallestEntryCopy = deepCopyCustomerEntry(smallestEntry);
+        if (smallestEntry == null) {
+            return null;
+        } else {
+            return deepCopyCustomerEntry(smallestEntry);
         }
-
-        return smallestEntryCopy;
     }
 
     public Map.Entry<Customer, String> getNext(Customer customer) {
         Map.Entry<Customer, String> nextEntry = customers.higherEntry(customer);
-        Map.Entry<Customer, String> nextEntryCopy = null;
-
-        if (nextEntry != null) {
-            nextEntryCopy = deepCopyCustomerEntry(nextEntry);
+        if (nextEntry == null) {
+            return null;
+        } else {
+            return deepCopyCustomerEntry(nextEntry);
         }
-
-        return nextEntryCopy;
     }
 
     public void add(Customer customer, String data) {
@@ -35,10 +31,8 @@ public class CustomerService {
     }
 
     private Map.Entry<Customer, String> deepCopyCustomerEntry(Map.Entry<Customer, String> originalEntry) {
-        Map.Entry<Customer, String> copyEntry;
         Customer customer = originalEntry.getKey();
-        copyEntry = Map.entry(
-                new Customer(customer.getId(), customer.getName(), customer.getScores()), originalEntry.getValue());
-        return copyEntry;
+        Customer customerCopy = new Customer(customer.getId(), customer.getName(), customer.getScores());
+        return Map.entry(customerCopy, originalEntry.getValue());
     }
 }

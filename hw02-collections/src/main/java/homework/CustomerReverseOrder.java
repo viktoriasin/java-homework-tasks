@@ -1,20 +1,17 @@
 package homework;
 
-import java.util.*;
+import java.util.Deque;
+import java.util.LinkedList;
 
 public class CustomerReverseOrder {
 
-    Set<Customer> customers = new LinkedHashSet<>();
-    Iterator<Customer> it;
+    Deque<Customer> customers = new LinkedList<>();
 
     public void add(Customer customer) {
         customers.add(customer);
     }
 
     public Customer take() {
-        if (it == null || !it.hasNext()) {
-            it = new LinkedList<>(customers).descendingIterator();
-        }
-        return it.next();
+        return customers.removeLast();
     }
 }
