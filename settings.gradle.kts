@@ -1,5 +1,5 @@
 rootProject.name = "hwJava"
-include("hw01-gradle")
+
 
 pluginManagement {
     val jgitver: String by settings
@@ -23,3 +23,4 @@ pluginManagement {
     }
 }
 include("hw01-gradle")
+include("hw02-collections")
