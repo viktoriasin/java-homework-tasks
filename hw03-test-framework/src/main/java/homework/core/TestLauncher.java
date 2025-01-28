@@ -7,111 +7,126 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @SuppressWarnings({"java:S106", "java:S5960", "java:S1144", "java:S112", "java:S1172", "java:S1181", "java:S1117"})
 public class TestLauncher {
     private final String className;
-    private List<Method> beforeMethods;
-    private List<Method> afterMethods;
-    private List<Method> testMethods;
-    private Map<String, TestRunInformation> testResults;
-    Constructor<?> constructor;
+    private final Map<String, TestResult> testResults = new HashMap<>();
+    private Set<Method> beforeMethods;
+    private Set<Method> afterMethods;
+    private Set<Method> testMethods;
+    private Constructor<?> constructor;
 
     public TestLauncher(String className) {
         this.className = className;
     }
 
-    private void prepare() throws ClassNotFoundException, NoSuchMethodException {
-        Class<?> clazz = Class.forName(className);
-        constructor = clazz.getDeclaredConstructor();
-        Method[] declaredMethods = clazz.getDeclaredMethods();
-        beforeMethods = getMethods(declaredMethods, Before.class);
-        afterMethods = getMethods(declaredMethods, After.class);
-        testMethods = getMethods(declaredMethods, Test.class);
-        testResults = new HashMap<>();
-    }
-
-    public void testClassAndPrintResults()
-            throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, InstantiationException,
-                    IllegalAccessException {
+    public void runTestsAndPrintResults() {
         prepare();
         run();
         printResults();
     }
 
-    private void printResults() {
-        int successCount = 0;
-        int failsCount = 0;
-
-        System.out.println("\t\t========TEST RESULTS==========\t\t");
-        System.out.println();
-        for (Map.Entry<String, TestRunInformation> mapEntry : testResults.entrySet()) {
-            String methodName = mapEntry.getKey();
-            TestRunInformation info = mapEntry.getValue();
-            boolean isTestSucceed = info.errorMessage().isEmpty();
-            if (isTestSucceed) {
-                successCount++;
-            } else {
-                failsCount++;
-            }
-
-            System.out.print("Test name: " + methodName + " Result: " + (isTestSucceed ? "success" : "fail") + "\n");
-            if (!isTestSucceed) {
-                System.out.print("Error message: " + info.errorMessage());
-            }
-            System.out.println();
-        }
-
-        System.out.println("|\tSuccess counts\t|\tError counts\t|\tTotal count\t|");
-        System.out.println("|\t" + successCount + "\t|\t" + failsCount + "\t|\t" + successCount + failsCount + "\t|");
-        System.out.println("\t\t===================================\t\t");
-    }
-
-    private void run() throws InvocationTargetException, InstantiationException, IllegalAccessException {
-        for (Method testMethod : testMethods) {
-            Object testObject = constructor.newInstance();
-            for (Method beforeMethod : beforeMethods) {
-                runHelperMethod(beforeMethod, testObject);
-            }
-
-            TestRunInformation testRunInformation = runTest(testMethod, testObject);
-            testResults.put(testMethod.getName(), testRunInformation);
-
-            for (Method afterMethod : afterMethods) {
-                runHelperMethod(afterMethod, testObject);
-            }
-        }
-    }
-
-    private List<Method> getMethods(Method[] allMethods, Class<? extends Annotation> methodType) {
-        List<Method> beforeMethods = new ArrayList<>();
-        for (Method currentMethod : allMethods) {
-            if (currentMethod.isAnnotationPresent(methodType)) {
-                beforeMethods.add(currentMethod);
-            }
-        }
-        return beforeMethods;
-    }
-
-    private void runHelperMethod(Method testMethod, Object testObject) {
+    private void prepare() {
+        Class<?> clazz;
         try {
-            testMethod.invoke(testObject);
-        } catch (IllegalAccessException | InvocationTargetException e) {
+            clazz = Class.forName(className);
+            constructor = clazz.getDeclaredConstructor();
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+        beforeMethods = getMethods(declaredMethods, Before.class);
+        afterMethods = getMethods(declaredMethods, After.class);
+        testMethods = getMethods(declaredMethods, Test.class);
     }
 
-    private TestRunInformation runTest(Method testMethod, Object testObject) {
+    private void run() {
+        for (Method testMethod : testMethods) {
+            Object testObject;
+            try {
+                testObject = constructor.newInstance();
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+            for (Method beforeMethod : beforeMethods) {
+                runConfigurationMethod(beforeMethod, testObject);
+            }
+
+            TestResult testResult = runTestMethod(testMethod, testObject);
+            testResults.put(testMethod.getName(), testResult);
+
+            for (Method afterMethod : afterMethods) {
+                runConfigurationMethod(afterMethod, testObject);
+            }
+        }
+    }
+
+    private void runConfigurationMethod(Method testMethod, Object testObject) {
         try {
             testMethod.invoke(testObject);
-        } catch (Error | IllegalAccessException | InvocationTargetException error) {
-
-            return new TestRunInformation(error.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(getErrorMessage(e));
         }
-        return new TestRunInformation("");
+    }
+
+    private TestResult runTestMethod(Method testMethod, Object testObject) {
+        try {
+            testMethod.invoke(testObject);
+        } catch (Exception error) {
+            return new TestResult(getErrorMessage(error));
+        }
+        return new TestResult("");
+    }
+
+    private void printResults() {
+        AtomicInteger successCount = new AtomicInteger();
+        AtomicInteger failsCount = new AtomicInteger();
+
+        System.out.println("Test results:");
+        testResults.forEach((testName, testResult) -> {
+            boolean isTestSucceed = testResult.errorMessage().isEmpty();
+
+            if (isTestSucceed) {
+                successCount.getAndIncrement();
+            } else {
+                failsCount.getAndIncrement();
+            }
+
+            var msg = isTestSucceed ? "Success" : "Error: " + testResult.errorMessage();
+            System.out.println(testName + ": " + msg);
+        });
+
+        System.out.println("Success test count: " + successCount);
+        System.out.println("Failed test count: " + failsCount);
+        System.out.println("Total test count: " + (successCount.get() + failsCount.get()));
+    }
+
+    private Set<Method> getMethods(Method[] allMethods, Class<? extends Annotation> annotationClass) {
+        Set<Method> methods = new HashSet<>();
+        for (Method currentMethod : allMethods) {
+            if (currentMethod.isAnnotationPresent(annotationClass)) {
+                methods.add(currentMethod);
+            }
+        }
+        return methods;
+    }
+
+    private String getErrorMessage(Exception error) {
+        String message;
+        if (error instanceof InvocationTargetException) {
+            message = ((InvocationTargetException) error)
+                    .getTargetException()
+                    .getMessage()
+                    .replaceAll("\n", "");
+        } else {
+            message = error.getMessage();
+        }
+        return message;
     }
 }
