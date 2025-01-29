@@ -7,7 +7,3 @@ val launchCustomTestFramework = tasks.register<JavaExec>("launchCustomTestFramew
     mainClass.set("homework.Main")
     classpath = java.sourceSets["main"].runtimeClasspath
 }
-
-tasks.build {
-    finalizedBy(launchCustomTestFramework)
-}
