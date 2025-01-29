@@ -13,8 +13,9 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@SuppressWarnings({"java:S106", "java:S5960", "java:S1144", "java:S112", "java:S1172", "java:S1181", "java:S1117"})
+@SuppressWarnings({"java:S106", "java:S5361", "java:S112"})
 public class TestLauncher {
+
     private final String className;
     private final Map<String, TestResult> testResults = new HashMap<>();
     private Set<Method> beforeMethods;
@@ -88,6 +89,7 @@ public class TestLauncher {
         AtomicInteger successCount = new AtomicInteger();
         AtomicInteger failsCount = new AtomicInteger();
 
+        System.out.println();
         System.out.println("Test results:");
         testResults.forEach((testName, testResult) -> {
             boolean isTestSucceed = testResult.errorMessage().isEmpty();
@@ -99,12 +101,11 @@ public class TestLauncher {
             }
 
             var msg = isTestSucceed ? "Success" : "Error: " + testResult.errorMessage();
-            System.out.println(testName + ": " + msg);
+            System.out.printf("%s: %s%n", testName, msg);
         });
-
-        System.out.println("Success test count: " + successCount);
-        System.out.println("Failed test count: " + failsCount);
-        System.out.println("Total test count: " + (successCount.get() + failsCount.get()));
+        System.out.printf("Success test count: %d%n", successCount.get());
+        System.out.printf("Failed test count: %d%n", failsCount.get());
+        System.out.printf("Total test count: %d%n", (successCount.get() + failsCount.get()));
     }
 
     private Set<Method> getMethods(Method[] allMethods, Class<? extends Annotation> annotationClass) {
@@ -119,11 +120,8 @@ public class TestLauncher {
 
     private String getErrorMessage(Exception error) {
         String message;
-        if (error instanceof InvocationTargetException) {
-            message = ((InvocationTargetException) error)
-                    .getTargetException()
-                    .getMessage()
-                    .replaceAll("\n", "");
+        if (error instanceof InvocationTargetException invocationError) {
+            message = invocationError.getTargetException().getMessage().replaceAll("\n", "");
         } else {
             message = error.getMessage();
         }

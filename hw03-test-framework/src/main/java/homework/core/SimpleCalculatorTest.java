@@ -7,19 +7,22 @@ import homework.SimpleCalculator;
 import homework.annotations.After;
 import homework.annotations.Before;
 import homework.annotations.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@SuppressWarnings({"java:S106", "java:S5960", "java:S1144", "java:S112", "java:S1172", "java:S1181"})
+@SuppressWarnings("java:S5960")
 public class SimpleCalculatorTest {
+    private static final Logger logger = LoggerFactory.getLogger(SimpleCalculatorTest.class);
 
     public SimpleCalculatorTest() {
-        System.out.println("New instance created;");
+        logger.debug("New instance created;");
     }
 
     private SimpleCalculator simpleCalculator;
 
     @Before
     public void setUp() {
-        System.out.println("Set up;");
+        logger.debug("Set up;");
         simpleCalculator = new SimpleCalculator();
     }
 
@@ -44,6 +47,6 @@ public class SimpleCalculatorTest {
 
     @After
     public void tearDown() {
-        System.out.println("Tear down;");
+        logger.debug("Tear down;");
     }
 }
