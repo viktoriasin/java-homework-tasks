@@ -8,7 +8,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -103,26 +102,24 @@ public class TestLauncher {
     }
 
     private void printResults(Map<String, TestResult> testResults) {
-        AtomicInteger successCount = new AtomicInteger();
-        AtomicInteger failsCount = new AtomicInteger();
+        int successCount = 0;
 
         System.out.println();
         System.out.println("Test results:");
-        testResults.forEach((testName, testResult) -> {
+        for (Map.Entry<String, TestResult> entry : testResults.entrySet()) {
+            TestResult testResult = entry.getValue();
             boolean isTestSucceed = testResult.errorMessage().isEmpty();
 
             if (isTestSucceed) {
-                successCount.getAndIncrement();
-            } else {
-                failsCount.getAndIncrement();
+                successCount++;
             }
 
             var msg = isTestSucceed ? "Success" : "Error: " + testResult.errorMessage();
-            System.out.printf("%s: %s%n", testName, msg);
-        });
-        System.out.printf("Success test count: %d%n", successCount.get());
-        System.out.printf("Failed test count: %d%n", failsCount.get());
-        System.out.printf("Total test count: %d%n", (successCount.get() + failsCount.get()));
+            System.out.printf("%s: %s%n", entry.getKey(), msg);
+        }
+        System.out.printf("Success test count: %d%n", successCount);
+        System.out.printf("Failed test count: %d%n", (testResults.size() - successCount));
+        System.out.printf("Total test count: %d%n", testResults.size());
     }
 
     private Set<Method> getMethods(Method[] allMethods, Class<? extends Annotation> annotationClass) {
