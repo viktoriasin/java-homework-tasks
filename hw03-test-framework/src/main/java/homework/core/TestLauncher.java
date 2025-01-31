@@ -7,10 +7,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,39 +17,41 @@ public class TestLauncher {
 
     private static final Logger logger = LoggerFactory.getLogger(TestLauncher.class);
 
-    private final String className;
-    private final Map<String, TestResult> testResults = new HashMap<>();
-    private Set<Method> beforeMethods;
-    private Set<Method> afterMethods;
-    private Set<Method> testMethods;
-    private Constructor<?> constructor;
+    private static final String BEFORE_METHODS = "beforeMethods";
+    private static final String AFTER_METHODS = "afterMethods";
+    private static final String TEST_METHODS = "testMethods";
+
+    private final Class<?> clazz;
+    private final Constructor<?> constructor;
 
     public TestLauncher(String className) {
-        this.className = className;
-    }
-
-    public void runTestsAndPrintResults() {
-        prepare();
-        run();
-        printResults();
-    }
-
-    private void prepare() {
-        Class<?> clazz;
         try {
-            clazz = Class.forName(className);
-            constructor = clazz.getDeclaredConstructor();
+            this.clazz = Class.forName(className);
+            this.constructor = clazz.getDeclaredConstructor();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
-        Method[] declaredMethods = clazz.getDeclaredMethods();
-        beforeMethods = getMethods(declaredMethods, Before.class);
-        afterMethods = getMethods(declaredMethods, After.class);
-        testMethods = getMethods(declaredMethods, Test.class);
     }
 
-    private void run() {
-        for (Method testMethod : testMethods) {
+    public void runTestsAndPrintResults() {
+        Map<String, TestResult> testResults = run();
+        printResults(testResults);
+    }
+
+    private Map<String, Set<Method>> getMethods() {
+        Method[] declaredMethods = clazz.getDeclaredMethods();
+        Map<String, Set<Method>> methods = new HashMap<>();
+        methods.put("beforeMethods", getMethods(declaredMethods, Before.class));
+        methods.put("afterMethods", getMethods(declaredMethods, After.class));
+        methods.put("testMethods", getMethods(declaredMethods, Test.class));
+        return methods;
+    }
+
+    private Map<String, TestResult> run() {
+        Map<String, TestResult> testResults = new HashMap<>();
+        Map<String, Set<Method>> methods = getMethods();
+
+        for (Method testMethod : methods.getOrDefault(TEST_METHODS, Collections.emptySet())) {
             Object testObject;
             try {
                 testObject = constructor.newInstance();
@@ -61,7 +60,7 @@ public class TestLauncher {
             }
 
             boolean isConfigurationMethodRunSuccessful = true;
-            for (Method beforeMethod : beforeMethods) {
+            for (Method beforeMethod : methods.getOrDefault(BEFORE_METHODS, Collections.emptySet())) {
                 isConfigurationMethodRunSuccessful = runConfigurationMethod(beforeMethod, testObject);
                 if (!isConfigurationMethodRunSuccessful) {
                     break;
@@ -73,10 +72,12 @@ public class TestLauncher {
                 testResults.put(testMethod.getName(), testResult);
             }
 
-            for (Method afterMethod : afterMethods) {
+            for (Method afterMethod : methods.getOrDefault(AFTER_METHODS, Collections.emptySet())) {
                 runConfigurationMethod(afterMethod, testObject);
             }
         }
+
+        return testResults;
     }
 
     private boolean runConfigurationMethod(Method testMethod, Object testObject) {
@@ -101,7 +102,7 @@ public class TestLauncher {
         return new TestResult("");
     }
 
-    private void printResults() {
+    private void printResults(Map<String, TestResult> testResults) {
         AtomicInteger successCount = new AtomicInteger();
         AtomicInteger failsCount = new AtomicInteger();
 
