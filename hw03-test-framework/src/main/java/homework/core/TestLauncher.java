@@ -4,7 +4,6 @@ import homework.annotations.After;
 import homework.annotations.Before;
 import homework.annotations.Test;
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -21,12 +20,10 @@ public class TestLauncher {
     private static final String TEST_METHODS = "testMethods";
 
     private final Class<?> clazz;
-    private final Constructor<?> constructor;
 
     public TestLauncher(String className) {
         try {
-            this.clazz = Class.forName(className);
-            this.constructor = clazz.getDeclaredConstructor();
+            clazz = Class.forName(className);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -40,9 +37,9 @@ public class TestLauncher {
     private Map<String, Set<Method>> getMethods() {
         Method[] declaredMethods = clazz.getDeclaredMethods();
         Map<String, Set<Method>> methods = new HashMap<>();
-        methods.put("beforeMethods", getMethods(declaredMethods, Before.class));
-        methods.put("afterMethods", getMethods(declaredMethods, After.class));
-        methods.put("testMethods", getMethods(declaredMethods, Test.class));
+        methods.put(BEFORE_METHODS, getMethods(declaredMethods, Before.class));
+        methods.put(AFTER_METHODS, getMethods(declaredMethods, After.class));
+        methods.put(TEST_METHODS, getMethods(declaredMethods, Test.class));
         return methods;
     }
 
@@ -53,7 +50,7 @@ public class TestLauncher {
         for (Method testMethod : methods.getOrDefault(TEST_METHODS, Collections.emptySet())) {
             Object testObject;
             try {
-                testObject = constructor.newInstance();
+                testObject = clazz.getDeclaredConstructor().newInstance();
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
@@ -84,7 +81,7 @@ public class TestLauncher {
             testMethod.invoke(testObject);
         } catch (Exception e) {
             logger.error(
-                    "Error during running configuration method for testing {} method: {}",
+                    "Error during run of configuration method for testing {} method: {}",
                     testMethod,
                     getErrorMessage(e));
             return false;
