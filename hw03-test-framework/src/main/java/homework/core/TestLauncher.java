@@ -12,9 +12,13 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @SuppressWarnings({"java:S106", "java:S5361", "java:S112"})
 public class TestLauncher {
+
+    private static final Logger logger = LoggerFactory.getLogger(TestLauncher.class);
 
     private final String className;
     private final Map<String, TestResult> testResults = new HashMap<>();
@@ -55,12 +59,19 @@ public class TestLauncher {
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
+
+            boolean isConfigurationMethodRunSuccessful = true;
             for (Method beforeMethod : beforeMethods) {
-                runConfigurationMethod(beforeMethod, testObject);
+                isConfigurationMethodRunSuccessful = runConfigurationMethod(beforeMethod, testObject);
+                if (!isConfigurationMethodRunSuccessful) {
+                    break;
+                }
             }
 
-            TestResult testResult = runTestMethod(testMethod, testObject);
-            testResults.put(testMethod.getName(), testResult);
+            if (isConfigurationMethodRunSuccessful) {
+                TestResult testResult = runTestMethod(testMethod, testObject);
+                testResults.put(testMethod.getName(), testResult);
+            }
 
             for (Method afterMethod : afterMethods) {
                 runConfigurationMethod(afterMethod, testObject);
@@ -68,12 +79,17 @@ public class TestLauncher {
         }
     }
 
-    private void runConfigurationMethod(Method testMethod, Object testObject) {
+    private boolean runConfigurationMethod(Method testMethod, Object testObject) {
         try {
             testMethod.invoke(testObject);
         } catch (Exception e) {
-            throw new RuntimeException(getErrorMessage(e));
+            logger.error(
+                    "Error during running configuration method for testing {} method: {}",
+                    testMethod,
+                    getErrorMessage(e));
+            return false;
         }
+        return true;
     }
 
     private TestResult runTestMethod(Method testMethod, Object testObject) {
