@@ -25,3 +25,4 @@ pluginManagement {
 include("hw01-gradle")
 include("hw02-collections")
 include("hw03-test-framework")
+include("hw05-aop")
