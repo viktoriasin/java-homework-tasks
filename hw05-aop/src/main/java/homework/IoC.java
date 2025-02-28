@@ -26,9 +26,13 @@ class Ioc {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (method.isAnnotationPresent(Log.class)) {
-                logger.info("invoking method:{}", method);
+            if (method.isAnnotationPresent(Log.class) && method.getName().equals("calculation")) {
+                logger.atInfo()
+                        .setMessage("executed method: calculation, param: {}")
+                        .addArgument(() -> args)
+                        .log();
             }
+
             return method.invoke(myClass, args);
         }
 
