@@ -34,6 +34,8 @@ allprojects {
     val testcontainersBom: String by project
     val protobufBom: String by project
     val guava: String by project
+    val bytebuddy: String by project
+    val bytebuddyagent: String by project
 
     apply(plugin = "io.spring.dependency-management")
     dependencyManagement {
@@ -44,6 +46,8 @@ allprojects {
                 mavenBom("com.google.protobuf:protobuf-bom:$protobufBom")
             }
             dependency("com.google.guava:guava:$guava")
+            dependency("net.bytebuddy:byte-buddy:$bytebuddy")
+            dependency("net.bytebuddy:byte-buddy-agent:$bytebuddyagent")
         }
     }
 

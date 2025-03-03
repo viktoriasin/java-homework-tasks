@@ -1,4 +1,4 @@
-package homework;
+package ru.sinvic.homework.proxy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

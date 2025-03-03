@@ -1,4 +1,4 @@
-package homework;
+package ru.sinvic.homework.proxy;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;

@@ -1,4 +1,4 @@
-package homework;
+package ru.sinvic.homework.proxy;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
@@ -26,7 +26,7 @@ class Ioc {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (method.isAnnotationPresent(Log.class) && method.getName().equals("calculation")) {
+            if (method.isAnnotationPresent(Log.class)) {
                 logger.atInfo()
                         .setMessage("executed method: calculation, param: {}")
                         .addArgument(() -> args)

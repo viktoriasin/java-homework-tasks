@@ -1,4 +1,4 @@
-package homework;
+package ru.sinvic.homework.proxy;
 
 public interface TestLoggingInterface {
     @Log
