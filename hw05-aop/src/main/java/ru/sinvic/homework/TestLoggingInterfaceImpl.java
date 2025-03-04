@@ -7,10 +7,10 @@ import org.slf4j.LoggerFactory;
 public class TestLoggingInterfaceImpl implements TestLoggingInterface {
     private static final Logger logger = LoggerFactory.getLogger(TestLoggingInterfaceImpl.class);
 
+    @Log
     @Override
-    public int calculation(int param) {
+    public void calculation(int param) {
         logInfo("TMP Doing calculation for param: {}", param);
-        return param;
     }
 
     @Override
@@ -18,6 +18,7 @@ public class TestLoggingInterfaceImpl implements TestLoggingInterface {
         logInfo("Doing calculation for param: {}", param1, param2);
     }
 
+    @Log
     @Override
     public void calculation(int param1, int param2, String param3) {
         logInfo("Doing calculation for param: {}", param1, param2, param3);

@@ -1,7 +1,6 @@
 package ru.sinvic.homework.instrumentation.proxy;
 
-import static net.bytebuddy.matcher.ElementMatchers.isAnnotatedWith;
-import static net.bytebuddy.matcher.ElementMatchers.named;
+import static net.bytebuddy.matcher.ElementMatchers.*;
 
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
@@ -12,12 +11,12 @@ import net.bytebuddy.implementation.MethodDelegation;
 import net.bytebuddy.utility.JavaModule;
 import ru.sinvic.homework.Log;
 
+// java -javaagent:proxyDemo.jar -jar proxyDemo.jar
 @SuppressWarnings("all")
 class Agent {
     public static void premain(String arguments, Instrumentation instrumentation) {
         new AgentBuilder.Default()
-                .type(named(
-                        "ru.sinvic.homework.TestLoggingInterfaceImpl")) // ElementMatchers.named("TestLoggingInterface")
+                .type(named("ru.sinvic.homework.TestLoggingInterfaceImpl"))
                 .transform(new AgentBuilder.Transformer() {
                     @Override
                     public DynamicType.Builder<?> transform(
@@ -26,12 +25,6 @@ class Agent {
                             ClassLoader classLoader,
                             JavaModule javaModule,
                             ProtectionDomain protectionDomain) {
-                        System.out.println("тип: " + typeDescription.getCanonicalName());
-
-                        //                        ElementMatcher.Junction<MethodDescription> matcher = hasAnnotation(new
-                        // InheritedAnnotationMatcher<>());
-                        //                        return
-                        // builder.method(matcher).intercept(MethodDelegation.to(Tmp.class));
                         return builder.method(isAnnotatedWith(Log.class))
                                 .intercept(MethodDelegation.to(AopLogger.class));
                     }
