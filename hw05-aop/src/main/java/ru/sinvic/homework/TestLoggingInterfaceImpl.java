@@ -1,14 +1,16 @@
-package ru.sinvic.homework.proxy;
+package ru.sinvic.homework;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@SuppressWarnings("all")
 public class TestLoggingInterfaceImpl implements TestLoggingInterface {
     private static final Logger logger = LoggerFactory.getLogger(TestLoggingInterfaceImpl.class);
 
     @Override
-    public void calculation(int param) {
-        logInfo("Doing calculation for param: {}", param);
+    public int calculation(int param) {
+        logInfo("TMP Doing calculation for param: {}", param);
+        return param;
     }
 
     @Override

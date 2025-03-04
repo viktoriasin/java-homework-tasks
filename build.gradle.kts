@@ -92,6 +92,8 @@ subprojects {
     apply<com.diffplug.gradle.spotless.SpotlessPlugin>()
     configure<com.diffplug.gradle.spotless.SpotlessExtension> {
         java {
+
+//            targetExclude("**/*.java")
             palantirJavaFormat("2.39.0")
         }
     }

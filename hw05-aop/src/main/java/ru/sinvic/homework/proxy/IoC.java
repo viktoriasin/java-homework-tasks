@@ -5,16 +5,19 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sinvic.homework.Log;
+import ru.sinvic.homework.TestLoggingInterface;
+import ru.sinvic.homework.TestLoggingInterfaceImpl;
 
-class Ioc {
-    private static final Logger logger = LoggerFactory.getLogger(Ioc.class);
+public class IoC {
+    private static final Logger logger = LoggerFactory.getLogger(IoC.class);
 
-    private Ioc() {}
+    private IoC() {}
 
-    static TestLoggingInterface createMyClass() {
+    public static TestLoggingInterface createMyClass() {
         InvocationHandler handler = new DemoInvocationHandler(new TestLoggingInterfaceImpl());
         return (TestLoggingInterface) Proxy.newProxyInstance(
-                Ioc.class.getClassLoader(), new Class<?>[] {TestLoggingInterface.class}, handler);
+                IoC.class.getClassLoader(), new Class<?>[] {TestLoggingInterface.class}, handler);
     }
 
     static class DemoInvocationHandler implements InvocationHandler {

@@ -2,6 +2,7 @@ import com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar
 
 plugins {
     id("com.github.johnrengelman.shadow")
+
 }
 
 dependencies {
@@ -20,7 +21,7 @@ tasks {
         archiveVersion.set("")
         archiveClassifier.set("")
         manifest {
-            attributes(mapOf("Main-Class" to "ru.sinvic.homework.instrumentation.proxy.ProxyDemo",
+            attributes(mapOf("Main-Class" to "ru.sinvic.homework.Demo",
                 "Premain-Class" to "ru.sinvic.homework.instrumentation.proxy.Agent"))
         }
         from(sourceSets.main.get().output)

@@ -1,8 +1,9 @@
-package ru.sinvic.homework.proxy;
+package ru.sinvic.homework;
 
+@SuppressWarnings("all")
 public interface TestLoggingInterface {
     @Log
-    void calculation(int param);
+    int calculation(int param);
 
     void calculation(int param1, int param2);
 

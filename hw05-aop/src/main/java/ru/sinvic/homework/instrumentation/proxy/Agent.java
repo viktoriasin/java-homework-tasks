@@ -1,36 +1,41 @@
 package ru.sinvic.homework.instrumentation.proxy;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import static net.bytebuddy.matcher.ElementMatchers.isAnnotatedWith;
+import static net.bytebuddy.matcher.ElementMatchers.named;
 
-import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
 import java.security.ProtectionDomain;
+import net.bytebuddy.agent.builder.AgentBuilder;
+import net.bytebuddy.description.type.TypeDescription;
+import net.bytebuddy.dynamic.DynamicType;
+import net.bytebuddy.implementation.MethodDelegation;
+import net.bytebuddy.utility.JavaModule;
+import ru.sinvic.homework.Log;
 
-public class Agent {
-    private static final Logger logger = LoggerFactory.getLogger(Agent.class);
+@SuppressWarnings("all")
+class Agent {
+    public static void premain(String arguments, Instrumentation instrumentation) {
+        new AgentBuilder.Default()
+                .type(named(
+                        "ru.sinvic.homework.TestLoggingInterfaceImpl")) // ElementMatchers.named("TestLoggingInterface")
+                .transform(new AgentBuilder.Transformer() {
+                    @Override
+                    public DynamicType.Builder<?> transform(
+                            DynamicType.Builder<?> builder,
+                            TypeDescription typeDescription,
+                            ClassLoader classLoader,
+                            JavaModule javaModule,
+                            ProtectionDomain protectionDomain) {
+                        System.out.println("тип: " + typeDescription.getCanonicalName());
 
-    private Agent() {}
-
-    public static void premain(String agentArgs, Instrumentation inst) {
-        logger.info("premain");
-        inst.addTransformer(new ClassFileTransformer() {
-            @Override
-            public byte[] transform(
-                    ClassLoader loader,
-                    String className,
-                    Class<?> classBeingRedefined,
-                    ProtectionDomain protectionDomain,
-                    byte[] classfileBuffer) {
-                if (className.equals("ru/sinvic/homework/instrumentation/proxy/TestLoggingInterfaceImpl")) {
-                    return addProxyMethod(classfileBuffer);
-                }
-                return classfileBuffer;
-            }
-        });
-    }
-
-    private static byte[] addProxyMethod(byte[] classfileBuffer) {
-        return null;
+                        //                        ElementMatcher.Junction<MethodDescription> matcher = hasAnnotation(new
+                        // InheritedAnnotationMatcher<>());
+                        //                        return
+                        // builder.method(matcher).intercept(MethodDelegation.to(Tmp.class));
+                        return builder.method(isAnnotatedWith(Log.class))
+                                .intercept(MethodDelegation.to(AopLogger.class));
+                    }
+                })
+                .installOn(instrumentation);
     }
 }
