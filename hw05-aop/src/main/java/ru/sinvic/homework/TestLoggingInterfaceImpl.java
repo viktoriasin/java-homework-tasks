@@ -9,32 +9,28 @@ public class TestLoggingInterfaceImpl implements TestLoggingInterface {
 
     @Log
     @Override
-    public void calculation(int param) {
-        logInfo("TMP Doing calculation for param: {}", param);
+    public int calculation(int param) {
+        return param * param;
     }
 
     @Override
-    public void calculation(int param1, int param2) {
-        logInfo("Doing calculation for param: {}", param1, param2);
+    public int calculation(int param1, int param2) {
+        return param1 * param2;
     }
 
     @Log
     @Override
-    public void calculation(int param1, int param2, String param3) {
-        logInfo("Doing calculation for param: {}", param1, param2, param3);
+    public String calculation(int param1, int param2, String param3) {
+        return param3 + Integer.toString(param1 * param2);
     }
 
     @Override
-    public void process(String param) {
-        logInfo("Process param: {}", param);
+    public String process(String param) {
+        return param.toUpperCase();
     }
 
     @Override
     public String toString() {
         return "TestLoggingInterfaceImpl{}";
-    }
-
-    private void logInfo(String message, Object... params) {
-        logger.atInfo().setMessage(message).addArgument(() -> params).log();
     }
 }

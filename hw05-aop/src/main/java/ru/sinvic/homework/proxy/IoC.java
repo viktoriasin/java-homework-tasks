@@ -6,42 +6,39 @@ import java.lang.reflect.Proxy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sinvic.homework.Log;
-import ru.sinvic.homework.TestLoggingInterface;
-import ru.sinvic.homework.TestLoggingInterfaceImpl;
 
 public class IoC {
     private static final Logger logger = LoggerFactory.getLogger(IoC.class);
 
     private IoC() {}
 
-    public static TestLoggingInterface createMyClass() {
-        InvocationHandler handler = new DemoInvocationHandler(new TestLoggingInterfaceImpl());
-        return (TestLoggingInterface) Proxy.newProxyInstance(
-                IoC.class.getClassLoader(), new Class<?>[] {TestLoggingInterface.class}, handler);
+    public static Object createMyClass(Object objectToWrap, Class<?> interfaceClass) {
+        InvocationHandler handler = new DemoInvocationHandler(objectToWrap);
+        return Proxy.newProxyInstance(IoC.class.getClassLoader(), new Class<?>[] {interfaceClass}, handler);
     }
 
     static class DemoInvocationHandler implements InvocationHandler {
-        private final TestLoggingInterface myClass;
+        private final Object objectToWrap;
 
-        DemoInvocationHandler(TestLoggingInterface myClass) {
-            this.myClass = myClass;
+        DemoInvocationHandler(Object objectToWrap) {
+            this.objectToWrap = objectToWrap;
         }
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
             if (method.isAnnotationPresent(Log.class)) {
-                logger.atInfo()
-                        .setMessage("executed method: calculation, param: {}")
-                        .addArgument(() -> args)
-                        .log();
+                logger.info(
+                        "executed method: {} for class {}, param: {}",
+                        method.getName(),
+                        objectToWrap.getClass().getSimpleName(),
+                        args);
             }
-
-            return method.invoke(myClass, args);
+            return method.invoke(objectToWrap, args);
         }
 
         @Override
         public String toString() {
-            return "DemoInvocationHandler{" + "myClass=" + myClass + '}';
+            return "DemoInvocationHandler{" + "myClass=" + objectToWrap + '}';
         }
     }
 }

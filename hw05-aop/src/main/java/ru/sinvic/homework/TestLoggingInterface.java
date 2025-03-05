@@ -1,11 +1,13 @@
 package ru.sinvic.homework;
 
 public interface TestLoggingInterface {
-    void calculation(int param);
+    @Log
+    int calculation(int param);
 
-    void calculation(int param1, int param2);
+    int calculation(int param1, int param2);
 
-    void calculation(int param1, int param2, String param3);
+    @Log
+    String calculation(int param1, int param2, String param3);
 
-    void process(String param);
+    String process(String param);
 }
