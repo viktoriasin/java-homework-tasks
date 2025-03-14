@@ -26,7 +26,7 @@ public class IoC {
 
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
-            if (method.isAnnotationPresent(Log.class)) {
+            if (isAnnotationPresent(method)) {
                 logger.info(
                         "executed method: {} for class {}, param: {}",
                         method.getName(),
@@ -39,6 +39,15 @@ public class IoC {
         @Override
         public String toString() {
             return "DemoInvocationHandler{" + "myClass=" + objectToWrap + '}';
+        }
+
+        private boolean isAnnotationPresent(Method method) throws NoSuchMethodException {
+            boolean isAnnotationPresentInImpl = objectToWrap
+                    .getClass()
+                    .getMethod(method.getName(), method.getParameterTypes())
+                    .isAnnotationPresent(Log.class);
+            boolean isAnnotationPresentInInterface = method.isAnnotationPresent(Log.class);
+            return isAnnotationPresentInInterface || isAnnotationPresentInImpl;
         }
     }
 }
