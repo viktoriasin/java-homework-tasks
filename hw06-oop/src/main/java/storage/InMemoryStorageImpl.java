@@ -1,9 +1,12 @@
-import java.util.HashMap;
+package storage;
+
+import denomination.Denomination;
+import domain.DenominationAndItsQuantity;
+import java.util.EnumMap;
 import java.util.Iterator;
-import java.util.Map;
 
 public class InMemoryStorageImpl implements Storage {
-    private final Map<Denomination, Integer> storage = new HashMap<>();
+    private final EnumMap<Denomination, Integer> storage = new EnumMap<>(Denomination.class);
 
     @Override
     public void storeAmount(Denomination denomination, Integer quantity) {

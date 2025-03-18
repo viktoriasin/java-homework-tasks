@@ -1,3 +1,5 @@
+package util;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import denomination.Denomination;
@@ -6,7 +8,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import org.junit.jupiter.api.Test;
-import util.AmountToDenominationConverterImpl;
 
 class AmountToDenominationConverterImplTest {
 

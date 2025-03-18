@@ -1,7 +1,13 @@
-import java.util.Iterator;
+package atm;
+
+import domain.DenominationAndItsQuantity;
+import exceptions.ATMException;
 import java.util.List;
+import storage.Storage;
+import util.AmountToDenominationConverter;
 
 public class ATMImpl implements ATM {
+
     private final Storage storage;
     private final AmountToDenominationConverter denominationConverter;
 
@@ -10,15 +16,15 @@ public class ATMImpl implements ATM {
         this.denominationConverter = denominationConverter;
     }
 
-    public void prepare(Denomination valuesHolder) {
-        denominationConverter.fillValues(Denomination.values());
+    @Override
+    public void deposit(DenominationAndItsQuantity denominationAndItsQuantity) {
+        storage.storeAmount(denominationAndItsQuantity.denomination(), denominationAndItsQuantity.quantity());
     }
 
     @Override
-    public void deposit(Integer amount) {
-        List<DenominationAndItsQuantity> denominationsWithQuantity = denominationConverter.convert(amount);
-        for (DenominationAndItsQuantity denominationAndItsQuantity : denominationsWithQuantity) {
-            storage.storeAmount(denominationAndItsQuantity.denomination(), denominationAndItsQuantity.quantity());
+    public void deposit(List<DenominationAndItsQuantity> denominationAndItsQuantity) {
+        for (DenominationAndItsQuantity amount : denominationAndItsQuantity) {
+            storage.storeAmount(amount.denomination(), amount.quantity());
         }
     }
 
@@ -36,11 +42,9 @@ public class ATMImpl implements ATM {
     }
 
     @Override
-    public Integer getRemainingAmount() {
-        Integer remainingAmount = 0;
-        Iterator<DenominationAndItsQuantity> it = storage.iterator();
-        while (it.hasNext()) {
-            DenominationAndItsQuantity denominationAndItsQuantity = it.next();
+    public int getRemainingAmount() {
+        int remainingAmount = 0;
+        for (DenominationAndItsQuantity denominationAndItsQuantity : storage) {
             remainingAmount += denominationAndItsQuantity.denomination().getDenominationValue()
                     * denominationAndItsQuantity.quantity();
         }

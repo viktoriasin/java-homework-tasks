@@ -1,10 +1,10 @@
+package storage;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import denomination.Denomination;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import storage.InMemoryStorageImpl;
-import storage.Storage;
 
 class InMemoryStorageImplTest {
     Storage storage;

@@ -1,9 +1,5 @@
-package util;
+package domain;
 
 import denomination.Denomination;
 
-public record DenominationAndItsQuantity(Denomination denomination, Integer quantity) {
-    public Integer getAmount() {
-        return denomination.getDenominationValue() * quantity;
-    }
-}
+public record DenominationAndItsQuantity(Denomination denomination, int quantity) {}

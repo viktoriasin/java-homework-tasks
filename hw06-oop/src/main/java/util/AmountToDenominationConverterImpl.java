@@ -4,13 +4,13 @@ import denomination.Denomination;
 import domain.DenominationAndItsQuantity;
 import java.util.*;
 
-public class TreeSetAmountToDenominationConverterImpl implements AmountToDenominationConverter {
+@SuppressWarnings("java:S1171")
+public class AmountToDenominationConverterImpl implements AmountToDenominationConverter {
     private final TreeSet<Denomination> denominationSet =
             new TreeSet<>(Comparator.comparing(Denomination::getDenominationValue));
 
-    @Override
-    public void fillValues(Denomination[] values) {
-        denominationSet.addAll(List.of(values));
+    {
+        denominationSet.addAll(List.of(Denomination.values()));
     }
 
     @Override

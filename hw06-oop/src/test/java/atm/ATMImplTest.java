@@ -1,10 +1,11 @@
+package atm;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import atm.ATM;
-import atm.ATMImpl;
 import denomination.Denomination;
 import domain.DenominationAndItsQuantity;
+import exceptions.ATMException;
 import java.util.Collections;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -90,6 +91,6 @@ class ATMImplTest {
                 .thenReturn(generateTestListOfDenominationAndItsQuantity().iterator());
 
         atm.deposit(DENOMINATION_TO_DEPOSIT);
-        assertFalse(atm.withdraw(AMOUNT_TO_WITHDRAW2));
+        assertThrows(ATMException.class, () -> atm.withdraw(AMOUNT_TO_WITHDRAW2));
     }
 }

@@ -1,7 +1,14 @@
+package atm;
+
+import domain.DenominationAndItsQuantity;
+import java.util.List;
+
 public interface ATM {
-    void deposit(Integer amount);
+    void deposit(DenominationAndItsQuantity denominationAndItsQuantity);
+
+    void deposit(List<DenominationAndItsQuantity> denominationAndItsQuantity);
 
     void withdraw(Integer amount);
 
-    Integer getRemainingAmount();
+    int getRemainingAmount();
 }
