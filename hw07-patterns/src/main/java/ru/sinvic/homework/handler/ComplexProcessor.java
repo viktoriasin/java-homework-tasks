@@ -5,9 +5,9 @@ import java.util.List;
 import java.util.function.Consumer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.listener.Listener;
-import ru.otus.model.Message;
-import ru.otus.processor.Processor;
+import ru.sinvic.homework.listener.Listener;
+import ru.sinvic.homework.model.Message;
+import ru.sinvic.homework.processor.Processor;
 
 public class ComplexProcessor implements Handler {
     private static final Logger logger = LoggerFactory.getLogger(ComplexProcessor.class);

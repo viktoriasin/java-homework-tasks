@@ -1,7 +1,7 @@
 package ru.sinvic.homework.handler;
 
-import ru.otus.listener.Listener;
-import ru.otus.model.Message;
+import ru.sinvic.homework.listener.Listener;
+import ru.sinvic.homework.model.Message;
 
 public interface Handler {
     Message handle(Message msg);

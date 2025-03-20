@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.listener.Listener;
-import ru.otus.model.Message;
-import ru.otus.processor.Processor;
+import ru.sinvic.homework.listener.Listener;
+import ru.sinvic.homework.model.Message;
+import ru.sinvic.homework.processor.Processor;
 
 class ComplexProcessorTest {
 

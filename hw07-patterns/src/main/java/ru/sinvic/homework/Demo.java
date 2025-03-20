@@ -3,12 +3,12 @@ package ru.sinvic.homework;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.handler.ComplexProcessor;
-import ru.otus.listener.ListenerPrinterConsole;
-import ru.otus.model.Message;
-import ru.otus.processor.LoggerProcessor;
-import ru.otus.processor.ProcessorConcatFields;
-import ru.otus.processor.ProcessorUpperField10;
+import ru.sinvic.homework.handler.ComplexProcessor;
+import ru.sinvic.homework.listener.ListenerPrinterConsole;
+import ru.sinvic.homework.model.Message;
+import ru.sinvic.homework.processor.LoggerProcessor;
+import ru.sinvic.homework.processor.ProcessorConcatFields;
+import ru.sinvic.homework.processor.ProcessorUpperField10;
 
 public class Demo {
     private static final Logger logger = LoggerFactory.getLogger(Demo.class);

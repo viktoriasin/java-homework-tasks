@@ -1,6 +1,6 @@
 package ru.sinvic.homework.processor;
 
-import ru.otus.model.Message;
+import ru.sinvic.homework.model.Message;
 
 public class ProcessorConcatFields implements Processor {
 

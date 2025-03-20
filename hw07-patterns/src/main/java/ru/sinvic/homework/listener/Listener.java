@@ -1,6 +1,6 @@
 package ru.sinvic.homework.listener;
 
-import ru.otus.model.Message;
+import ru.sinvic.homework.model.Message;
 
 @SuppressWarnings("java:S1135")
 public interface Listener {

@@ -1,7 +1,7 @@
-package ru.sinvic.homework.listener;
+package ru.sinvic.homework.listener.homework;
 
 import java.util.Optional;
-import ru.otus.model.Message;
+import ru.sinvic.homework.model.Message;
 
 public interface HistoryReader {
 
