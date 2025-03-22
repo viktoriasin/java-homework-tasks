@@ -8,7 +8,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import org.assertj.core.api.AssertionsForClassTypes;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.io.TempDir;
@@ -19,7 +18,6 @@ class ProcessorTest {
     // сам тест менять нельзя
 
     @Test
-    @Disabled("Чтобы прошел билд") // Эту аннотацию надо убрать
     @DisplayName("Из файла читается json, обрабатывается, результат сериализуется в строку")
     void processingTest(@TempDir Path tempDir) throws IOException {
         System.out.println(tempDir);
