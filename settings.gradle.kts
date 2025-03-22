@@ -26,4 +26,6 @@ include("hw01-gradle")
 include("hw02-collections")
 include("hw03-test-framework")
 include("hw05-aop")
+include("hw06-oop")
 include("hw07-patterns")
+
