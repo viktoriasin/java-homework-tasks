@@ -1,8 +1,7 @@
 package ru.sinvic.dataprocessor;
 
-import ru.sinvic.model.Measurement;
-
 import java.util.List;
+import ru.sinvic.model.Measurement;
 
 public interface Loader {
 

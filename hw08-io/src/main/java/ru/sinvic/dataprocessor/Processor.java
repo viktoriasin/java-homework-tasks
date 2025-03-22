@@ -1,9 +1,8 @@
 package ru.sinvic.dataprocessor;
 
-import ru.sinvic.model.Measurement;
-
 import java.util.List;
 import java.util.Map;
+import ru.sinvic.model.Measurement;
 
 public interface Processor {
 
