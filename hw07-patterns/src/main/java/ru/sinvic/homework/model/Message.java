@@ -10,7 +10,7 @@ public class Message {
     private final String field5;
     private final String field6;
     private final String field7;
-    private final String field8;
+    private String field8;
     private final String field9;
     private final String field10;
     private final String field11;

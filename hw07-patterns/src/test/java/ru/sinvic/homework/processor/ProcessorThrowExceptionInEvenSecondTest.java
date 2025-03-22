@@ -1,3 +1,28 @@
 package ru.sinvic.homework.processor;
 
-public class ProcessorThrowExceptionInEvenSecondTest {}
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.when;
+
+import java.time.LocalDateTime;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import ru.sinvic.homework.model.Message;
+import ru.sinvic.homework.processor.homework.DateTimeProvider;
+import ru.sinvic.homework.processor.homework.ProcessorThrowExceptionInEvenSecond;
+
+@ExtendWith(MockitoExtension.class)
+class ProcessorThrowExceptionInEvenSecondTest {
+    @Mock
+    private DateTimeProvider dateTimeProvider;
+
+    @Test
+    void testProcessorThrowExceptionInEvenSecond() {
+        when(dateTimeProvider.getDate()).thenReturn(LocalDateTime.of(2025, 1, 1, 22, 22, 22));
+        ProcessorThrowExceptionInEvenSecond processorThrowExceptionInEvenSecond =
+                new ProcessorThrowExceptionInEvenSecond(dateTimeProvider);
+        Message message = new Message.Builder(1L).field2("x").build();
+        assertThrows(RuntimeException.class, () -> processorThrowExceptionInEvenSecond.process(message));
+    }
+}

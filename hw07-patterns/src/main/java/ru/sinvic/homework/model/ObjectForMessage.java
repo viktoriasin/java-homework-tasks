@@ -15,6 +15,11 @@ public class ObjectForMessage implements Copyable<ObjectForMessage> {
     }
 
     @Override
+    public String toString() {
+        return "ObjectForMessage{" + "data=" + data + '}';
+    }
+
+    @Override
     public ObjectForMessage copy() {
         List<String> newData = new ArrayList<>(data);
         ObjectForMessage copyObject = new ObjectForMessage();
