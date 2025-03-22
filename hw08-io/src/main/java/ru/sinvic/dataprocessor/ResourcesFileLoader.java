@@ -24,9 +24,9 @@ public class ResourcesFileLoader implements Loader {
             ObjectMapper objectMapper = new ObjectMapper();
             return objectMapper.readValue(in, new TypeReference<>() {});
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new FileProcessException(e);
         } catch (NullPointerException nullPointerException) {
-            throw new RuntimeException("File " + fileName + " could not be found.");
+            throw new FileProcessException("File " + fileName + " could not be found.");
         }
     }
 }
