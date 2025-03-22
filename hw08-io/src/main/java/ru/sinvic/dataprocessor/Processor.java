@@ -1,6 +1,6 @@
 package ru.sinvic.dataprocessor;
 
-import ru.otus.model.Measurement;
+import ru.sinvic.model.Measurement;
 
 import java.util.List;
 import java.util.Map;

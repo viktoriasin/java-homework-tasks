@@ -1,5 +1,6 @@
 package ru.sinvic.dataprocessor;
 
+import org.assertj.core.api.AssertionsForClassTypes;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
