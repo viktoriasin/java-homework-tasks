@@ -2,11 +2,11 @@ package ru.sinvic.dataprocessor;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
+import ru.sinvic.model.Measurement;
+
 import java.io.InputStreamReader;
 import java.util.List;
 import java.util.Objects;
-import ru.sinvic.model.Measurement;
 
 public class ResourcesFileLoader implements Loader {
 
@@ -22,11 +22,14 @@ public class ResourcesFileLoader implements Loader {
         ClassLoader classLoader = getClass().getClassLoader();
         try (var in = new InputStreamReader(Objects.requireNonNull(classLoader.getResourceAsStream(fileName)))) {
             ObjectMapper objectMapper = new ObjectMapper();
-            return objectMapper.readValue(in, new TypeReference<>() {});
-        } catch (IOException e) {
-            throw new FileProcessException(e);
-        } catch (NullPointerException nullPointerException) {
-            throw new FileProcessException("File " + fileName + " could not be found.");
+            return objectMapper.readValue(in, new TypeReference<>() {
+            });
+        } catch (Exception e) {
+            if (e instanceof NullPointerException) {
+                throw new FileProcessException("File " + fileName + " could not be found.");
+            } else {
+                throw new FileProcessException(e);
+            }
         }
     }
 }
