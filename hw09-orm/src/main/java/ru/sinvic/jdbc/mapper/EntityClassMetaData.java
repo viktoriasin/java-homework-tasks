@@ -12,9 +12,9 @@ public interface EntityClassMetaData<T> {
 
     // Поле Id должно определять по наличию аннотации Id
     // Аннотацию @Id надо сделать самостоятельно
-    Field getIdField();
+    String getIdFieldName();
 
-    List<Field> getAllFields();
+    List<String> getAllFieldsNames();
 
-    List<Field> getFieldsWithoutId();
+    List<String> getFieldsNamesWithoutId();
 }
