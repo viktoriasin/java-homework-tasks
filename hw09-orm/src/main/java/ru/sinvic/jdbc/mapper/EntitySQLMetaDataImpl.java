@@ -19,11 +19,11 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
     @Override
     public String getSelectByIdSql() {
         return "SELECT " +
-            String.join(", ", entityClassMetaData.getAllFieldsNames()) +
+            String.join(", ", getAllColumnNames()) +
             " FROM " +
             entityClassMetaData.getName() +
             " WHERE " +
-            entityClassMetaData.getIdFieldName() + " = " + " ? ";
+            entityClassMetaData.getIdField() + " = " + " ? ";
     }
 
     @Override
@@ -31,7 +31,7 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
         StringBuilder sb = new StringBuilder();
         sb.append("INSERT INTO ");
         sb.append(entityClassMetaData.getName());
-        List<String> allFieldsNames = entityClassMetaData.getAllFieldsNames();
+        List<String> allFieldsNames = getAllColumnNames();
         sb.append("(").append(String.join(", ", allFieldsNames)).append(")");
         sb.append(" VALUES ");
         sb.append("(").append(String.join(", ", "?".repeat(allFieldsNames.size() - 1))).append(")");
@@ -44,10 +44,14 @@ public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
         sb.append("UPDATE ");
         sb.append(entityClassMetaData.getName());
         sb.append(" SET ");
-        List<String> list = entityClassMetaData.getAllFieldsNames().stream().map(name -> name + " = ?").toList();
+        List<String> list = getAllColumnNames().stream().map(name -> name + " = ?").toList();
         sb.append(String.join(",", list));
         sb.append(" WHERE ");
-        sb.append(entityClassMetaData.getIdFieldName()).append(" = ?");
+        sb.append(entityClassMetaData.getIdField()).append(" = ?");
         return sb.toString();
+    }
+
+    private List<String> getAllColumnNames() {
+        return entityClassMetaData.getAllFields().stream().map(FiledMappingMetadata::jdbcColumnName).toList();
     }
 }

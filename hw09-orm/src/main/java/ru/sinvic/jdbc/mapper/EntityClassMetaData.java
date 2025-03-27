@@ -1,7 +1,6 @@
 package ru.sinvic.jdbc.mapper;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
 import java.util.List;
 
 /** "Разбирает" объект на составные части */
@@ -12,9 +11,11 @@ public interface EntityClassMetaData<T> {
 
     // Поле Id должно определять по наличию аннотации Id
     // Аннотацию @Id надо сделать самостоятельно
-    String getIdFieldName();
+    FiledMappingMetadata getIdField();
 
-    List<String> getAllFieldsNames();
+    List<FiledMappingMetadata> getAllFields();
 
-    List<String> getFieldsNamesWithoutId();
+    List<FiledMappingMetadata> getFieldsWithoutId();
+
+    public ClassMappingMetadata getClassMappingMetadata();
 }

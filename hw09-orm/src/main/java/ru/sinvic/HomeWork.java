@@ -11,9 +11,7 @@ import ru.sinvic.crm.model.Client;
 import ru.sinvic.crm.model.Manager;
 import ru.sinvic.crm.service.DbServiceClientImpl;
 import ru.sinvic.crm.service.DbServiceManagerImpl;
-import ru.sinvic.jdbc.mapper.DataTemplateJdbc;
-import ru.sinvic.jdbc.mapper.EntityClassMetaData;
-import ru.sinvic.jdbc.mapper.EntitySQLMetaData;
+import ru.sinvic.jdbc.mapper.*;
 
 @SuppressWarnings({"java:S125", "java:S1481"})
 public class HomeWork {
@@ -31,8 +29,8 @@ public class HomeWork {
         var dbExecutor = new DbExecutorImpl();
 
         // Работа с клиентом
-        EntityClassMetaData<Client> entityClassMetaDataClient; // = new EntityClassMetaDataImpl();
-        EntitySQLMetaData entitySQLMetaDataClient = null; // = new EntitySQLMetaDataImpl(entityClassMetaDataClient);
+        EntityClassMetaData<Client> entityClassMetaDataClient = new EntityClassMetaDataImpl<>(Client.class);
+        EntitySQLMetaData entitySQLMetaDataClient =  new EntitySQLMetaDataImpl(entityClassMetaDataClient);
         var dataTemplateClient = new DataTemplateJdbc<Client>(
             dbExecutor, entitySQLMetaDataClient); // реализация DataTemplate, универсальная
 

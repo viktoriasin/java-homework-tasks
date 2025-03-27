@@ -13,8 +13,8 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     private final Class<T> clazz;
     private final ClassMappingMetadata classMappingMetadata;
 
-    public EntityClassMetaDataImpl(T obj) {
-        this.clazz = (Class<T>) obj.getClass();
+    public EntityClassMetaDataImpl(Class<T> clazz) {
+        this.clazz = clazz;
         classMappingMetadata = getClassMetadata();
     }
 
@@ -33,20 +33,25 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     }
 
     @Override
-    public String getIdFieldName() {
-        return classMappingMetadata.idField().jdbcColumnName();
+    public FiledMappingMetadata getIdField() {
+        return classMappingMetadata.idField();
     }
 
     @Override
-    public List<String> getAllFieldsNames() {
-        Stream<String> fieldNamesWithoutID = classMappingMetadata.fieldsWithoutId().stream().map(FiledMappingMetadata::jdbcColumnName);
-        String idName = classMappingMetadata.idField().jdbcColumnName();
+    public List<FiledMappingMetadata> getAllFields() {
+        Stream<FiledMappingMetadata> fieldNamesWithoutID = classMappingMetadata.fieldsWithoutId().stream();
+        FiledMappingMetadata idName = classMappingMetadata.idField();
         return Stream.concat(fieldNamesWithoutID, Stream.of(idName)).toList();
     }
 
     @Override
-    public List<String> getFieldsNamesWithoutId() {
-        return classMappingMetadata.fieldsWithoutId().stream().map(FiledMappingMetadata::jdbcColumnName).toList();
+    public List<FiledMappingMetadata> getFieldsWithoutId() {
+        return classMappingMetadata.fieldsWithoutId().stream().toList();
+    }
+
+    @Override
+    public ClassMappingMetadata getClassMappingMetadata() {
+        return classMappingMetadata;
     }
 
     private ClassMappingMetadata getClassMetadata() {
@@ -64,7 +69,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     }
 
     private FiledMappingMetadata getFieldMappingMetadata(Field field) {
-        return new FiledMappingMetadata(field.getName(), getFieldJDBCColumnName(field));
+        return new FiledMappingMetadata(field.getName(), getFieldJDBCColumnName(field), field);
     }
 
     private String getFieldJDBCColumnName(Field field) {
