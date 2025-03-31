@@ -60,7 +60,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     @Override
     public long insert(Connection connection, T client) {
         try {
-            return dbExecutor.executeStatement(connection, entitySQLMetaData.getInsertSql(),  instanceUtils.getValuesOfInstanceFields(client));  // TODO: сделать так, чтобы значения соответствовали списку в SQL!!!
+            return dbExecutor.executeStatement(connection, entitySQLMetaData.getInsertSql(),  instanceUtils.getValuesOfInstanceFieldsWithoutId(client));
         } catch (Exception e) {
             throw new DataTemplateException(e);
         }
@@ -70,7 +70,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     public void update(Connection connection, T client) {
         try {
             dbExecutor.executeStatement(
-                connection, entitySQLMetaData.getUpdateSql(), instanceUtils.getValuesOfInstanceFields(client)); // TODO: сделать так, чтобы значения соответствовали списку в SQL!!!
+                connection, entitySQLMetaData.getUpdateSql(), instanceUtils.getValuesOfInstanceFieldsWithId(client));
         } catch (Exception e) {
             throw new DataTemplateException(e);
         }

@@ -41,19 +41,21 @@ public class InstanceUtils<T> {
         return o;
     }
 
-    public List<Object> getValuesOfInstanceFields(T object) {
+    public List<Object> getValuesOfInstanceFieldsWithoutId(T object) {
         String idFieldName = entityClassMetaData.getIdField().entityPropertyName();
         List<Object> valuesList = new ArrayList<>();
-        for (Method method : entityClassMetaData.getGetterMethods()) {
+        for (Method method : entityClassMetaData.getFieldsWithoutId().stream().map(FieldMappingMetadata::getter).toList()) {
             if (!method.getName().toLowerCase().endsWith(idFieldName.toLowerCase())) {
-                try {
-                    valuesList.add(method.invoke(object));
-                } catch (IllegalAccessException | InvocationTargetException e) {
-                    throw new RuntimeException(e);
-                }
+                valuesList.add(getFieldValue(object, method));
             }
         }
         return Collections.unmodifiableList(valuesList);
+    }
+
+    public List<Object> getValuesOfInstanceFieldsWithId(T object) {
+        List<Object> result = getValuesOfInstanceFieldsWithoutId(object);
+        result.add(getFieldValue(object, entityClassMetaData.getIdField().getter()));
+        return result;
     }
 
     private void setField(Field field, T object, ResultSet rs) {
@@ -76,6 +78,14 @@ public class InstanceUtils<T> {
                 field.set(object, rs.getObject(fieldName));
             }
         } catch (IllegalAccessException | SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    private Object getFieldValue(T object, Method method) {
+        try {
+            return method.invoke(object);
+        } catch (IllegalAccessException | InvocationTargetException e) {
             throw new RuntimeException(e);
         }
     }

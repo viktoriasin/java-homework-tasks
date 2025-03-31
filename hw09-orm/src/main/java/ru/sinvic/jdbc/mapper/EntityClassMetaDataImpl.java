@@ -7,7 +7,10 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
@@ -69,8 +72,9 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     private ClassMetadata getClassMetadata() {
         FieldMappingMetadata idField = null;
         List<FieldMappingMetadata> fieldsWithoutId = new ArrayList<>();
+        Map<String, Method> methodMap = Arrays.stream(clazz.getDeclaredMethods()).collect(Collectors.toMap(method -> uncapitilize(method.getName()), method -> method));
         for (Field field : clazz.getDeclaredFields()) {
-            FieldMappingMetadata fieldMappingMetadata = getFieldMappingMetadata(field);
+            FieldMappingMetadata fieldMappingMetadata = getFieldMappingMetadata(field, methodMap.get(field.getName()));
             if (field.isAnnotationPresent(Id.class)) {
                 idField = fieldMappingMetadata;
             } else {
@@ -80,8 +84,13 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         return new ClassMetadata(idField, fieldsWithoutId);
     }
 
-    private FieldMappingMetadata getFieldMappingMetadata(Field field) {
-        return new FieldMappingMetadata(field.getName(), getFieldJDBCColumnName(field), field);
+    private static String uncapitilize(String methodName) {
+        String substring = methodName.substring(3);
+        return substring.substring(0, 1).toLowerCase() + substring.substring(1);
+    }
+
+    private FieldMappingMetadata getFieldMappingMetadata(Field field, Method getterMethod) {
+        return new FieldMappingMetadata(field.getName(), getFieldJDBCColumnName(field), field, getterMethod);
     }
 
     private String getFieldJDBCColumnName(Field field) {
