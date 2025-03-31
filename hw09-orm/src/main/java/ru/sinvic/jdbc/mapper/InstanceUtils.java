@@ -41,7 +41,7 @@ public class InstanceUtils<T> {
         return o;
     }
 
-    public List<Object> getValuesOfInstanceFieldsList(T object) {
+    public List<Object> getValuesOfInstanceFields(T object) {
         String idFieldName = entityClassMetaData.getIdField().entityPropertyName();
         List<Object> valuesList = new ArrayList<>();
         for (Method method : entityClassMetaData.getGetterMethods()) {
