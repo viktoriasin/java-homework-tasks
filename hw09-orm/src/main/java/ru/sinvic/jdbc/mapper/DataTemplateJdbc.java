@@ -22,9 +22,9 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private final DbExecutor dbExecutor;
     private final EntitySQLMetaData entitySQLMetaData;
-    private final EntityClassMetaDataImpl<T> entityClassMetaData;
+    private final EntityClassMetaData<T> entityClassMetaData;
 
-    public DataTemplateJdbc(DbExecutor dbExecutor, EntitySQLMetaData entitySQLMetaData, EntityClassMetaDataImpl<T> entityClassMetaData) {
+    public DataTemplateJdbc(DbExecutor dbExecutor, EntitySQLMetaData entitySQLMetaData, EntityClassMetaData<T> entityClassMetaData) {
         this.dbExecutor = dbExecutor;
         this.entitySQLMetaData = entitySQLMetaData;
         this.entityClassMetaData = entityClassMetaData;
@@ -48,7 +48,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     public List<T> findAll(Connection connection) {
         return (List<T>) dbExecutor
             .executeSelect(connection, entitySQLMetaData.getSelectAllSql(), Collections.emptyList(), rs -> {
-                var objectsList = new ArrayList<Object>();
+                var objectsList = new ArrayList<>();
                 try {
                     while (rs.next()) {
                         objectsList.add(constructNewInstanceFromResultSet(rs));
@@ -87,7 +87,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
     }
 
     private void setFieldsOfGenericType(ResultSet rs, T o) {
-        List<Field> fieldsWithoutId = entityClassMetaData.getAllFields().stream().map(FiledMappingMetadata::field).toList();
+        List<Field> fieldsWithoutId = entityClassMetaData.getAllFields().stream().map(FieldMappingMetadata::field).toList();
         for (Field field : fieldsWithoutId) {
             setField(field, o, rs);
         }

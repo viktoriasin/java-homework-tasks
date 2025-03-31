@@ -11,11 +11,9 @@ public interface EntityClassMetaData<T> {
 
     // Поле Id должно определять по наличию аннотации Id
     // Аннотацию @Id надо сделать самостоятельно
-    FiledMappingMetadata getIdField();
+    FieldMappingMetadata getIdField();
 
-    List<FiledMappingMetadata> getAllFields();
+    List<FieldMappingMetadata> getAllFields();
 
-    List<FiledMappingMetadata> getFieldsWithoutId();
-
-    public ClassMappingMetadata getClassMappingMetadata();
+    List<FieldMappingMetadata> getFieldsWithoutId();
 }
