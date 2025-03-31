@@ -5,11 +5,12 @@ import ru.sinvic.jdbc.annotations.Id;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class EntityClassMetaData<T> implements EntityClassMetaData<T> {
+public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     private final Class<T> clazz;
     private final ClassMetadata classMetadata;
 
@@ -47,6 +48,22 @@ public class EntityClassMetaData<T> implements EntityClassMetaData<T> {
     @Override
     public List<FieldMappingMetadata> getFieldsWithoutId() {
         return classMetadata.fieldsWithoutId().stream().toList();
+    }
+
+    @Override
+    public List<Method> getGetterMethods() {
+        try {
+            Method[] methods = clazz.getDeclaredMethods();
+            List<Method> getterMethods = new ArrayList<>();
+            for (Method method : methods) {
+                if (method.getName().startsWith("get")) {
+                    getterMethods.add(method);
+                }
+            }
+            return getterMethods;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private ClassMetadata getClassMetadata() {
