@@ -1,8 +1,5 @@
 package ru.sinvic.jdbc.mapper;
 
-import ru.sinvic.jdbc.annotations.Column;
-import ru.sinvic.jdbc.annotations.Id;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -12,6 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import ru.sinvic.core.repository.DataTemplateException;
+import ru.sinvic.jdbc.annotations.Column;
+import ru.sinvic.jdbc.annotations.Id;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     private final Class<T> clazz;
@@ -32,7 +32,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         try {
             return clazz.getConstructor();
         } catch (NoSuchMethodException e) {
-            throw new RuntimeException(e);
+            throw new DataTemplateException(e);
         }
     }
 
@@ -65,16 +65,18 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
             }
             return getterMethods;
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DataTemplateException(e);
         }
     }
 
     private ClassMetadata getClassMetadata() {
         FieldMappingMetadata idField = null;
         List<FieldMappingMetadata> fieldsWithoutId = new ArrayList<>();
-        Map<String, Method> methodMap = Arrays.stream(clazz.getDeclaredMethods()).collect(Collectors.toMap(method -> uncapitilize(method.getName()), method -> method));
+        Map<String, Method> getterMethodMap = getMethods("get");
+        Map<String, Method> setterMethodMap = getMethods("set");
         for (Field field : clazz.getDeclaredFields()) {
-            FieldMappingMetadata fieldMappingMetadata = getFieldMappingMetadata(field, methodMap.get(field.getName()));
+            FieldMappingMetadata fieldMappingMetadata = getFieldMappingMetadata(
+                    field, getterMethodMap.get(field.getName()), setterMethodMap.get(field.getName()));
             if (field.isAnnotationPresent(Id.class)) {
                 idField = fieldMappingMetadata;
             } else {
@@ -84,13 +86,20 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         return new ClassMetadata(idField, fieldsWithoutId);
     }
 
+    private Map<String, Method> getMethods(String firstLettersInMethodName) {
+        return Arrays.stream(clazz.getDeclaredMethods())
+                .filter(method -> method.getName().startsWith(firstLettersInMethodName))
+                .collect(Collectors.toMap(method -> uncapitilize(method.getName()), method -> method));
+    }
+
     private static String uncapitilize(String methodName) {
         String substring = methodName.substring(3);
         return substring.substring(0, 1).toLowerCase() + substring.substring(1);
     }
 
-    private FieldMappingMetadata getFieldMappingMetadata(Field field, Method getterMethod) {
-        return new FieldMappingMetadata(field.getName(), getFieldJDBCColumnName(field), field, getterMethod);
+    private FieldMappingMetadata getFieldMappingMetadata(Field field, Method getterMethod, Method setterMethod) {
+        return new FieldMappingMetadata(
+                field.getName(), getFieldJDBCColumnName(field), field, getterMethod, setterMethod);
     }
 
     private String getFieldJDBCColumnName(Field field) {

@@ -9,6 +9,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import ru.sinvic.core.repository.DataTemplateException;
 
 public class InstanceUtils<T> {
     private final EntityClassMetaData<T> entityClassMetaData;
@@ -24,8 +25,9 @@ public class InstanceUtils<T> {
     }
 
     public void setFieldsOfGenericType(ResultSet rs, T o) {
-        List<Field> fieldsWithoutId = entityClassMetaData.getAllFields().stream().map(FieldMappingMetadata::field).toList();
-        for (Field field : fieldsWithoutId) {
+        List<FieldMappingMetadata> fields =
+                entityClassMetaData.getAllFields().stream().toList();
+        for (FieldMappingMetadata field : fields) {
             setField(field, o, rs);
         }
     }
@@ -36,7 +38,7 @@ public class InstanceUtils<T> {
         try {
             o = (T) declaredConstructor.newInstance();
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new DataTemplateException(e);
         }
         return o;
     }
@@ -44,7 +46,9 @@ public class InstanceUtils<T> {
     public List<Object> getValuesOfInstanceFieldsWithoutId(T object) {
         String idFieldName = entityClassMetaData.getIdField().entityPropertyName();
         List<Object> valuesList = new ArrayList<>();
-        for (Method method : entityClassMetaData.getFieldsWithoutId().stream().map(FieldMappingMetadata::getter).toList()) {
+        for (Method method : entityClassMetaData.getFieldsWithoutId().stream()
+                .map(FieldMappingMetadata::getter)
+                .toList()) {
             if (!method.getName().toLowerCase().endsWith(idFieldName.toLowerCase())) {
                 valuesList.add(getFieldValue(object, method));
             }
@@ -53,32 +57,34 @@ public class InstanceUtils<T> {
     }
 
     public List<Object> getValuesOfInstanceFieldsWithId(T object) {
-        List<Object> result = getValuesOfInstanceFieldsWithoutId(object);
+        List<Object> result = new ArrayList<>(getValuesOfInstanceFieldsWithoutId(object));
         result.add(getFieldValue(object, entityClassMetaData.getIdField().getter()));
         return result;
     }
 
-    private void setField(Field field, T object, ResultSet rs) {
-        Class<?> type = field.getType();
-        String fieldName = field.getName();
+    private void setField(FieldMappingMetadata fieldMappingMetadata, T object, ResultSet rs) {
+        Field entityField = fieldMappingMetadata.field();
+        Class<?> type = entityField.getType();
+        String fieldName = fieldMappingMetadata.jdbcColumnName();
+        Method setterMethod = fieldMappingMetadata.setter();
         try {
             if (type == int.class) {
-                field.set(object, rs.getInt(fieldName));
+                setterMethod.invoke(object, rs.getInt(fieldName));
             } else if (type == long.class) {
-                field.set(object, rs.getLong(fieldName));
+                setterMethod.invoke(object, rs.getLong(fieldName));
             } else if (type == byte.class) {
-                field.set(object, rs.getByte(fieldName));
+                setterMethod.invoke(object, rs.getByte(fieldName));
             } else if (type == short.class) {
-                field.set(object, rs.getShort(fieldName));
+                setterMethod.invoke(object, rs.getShort(fieldName));
             } else if (type == double.class) {
-                field.set(object, rs.getDouble(fieldName));
+                setterMethod.invoke(object, rs.getDouble(fieldName));
             } else if (type == boolean.class) {
-                field.set(object, rs.getBoolean(fieldName));
+                setterMethod.invoke(object, rs.getBoolean(fieldName));
             } else {
-                field.set(object, rs.getObject(fieldName));
+                setterMethod.invoke(object, rs.getObject(fieldName));
             }
-        } catch (IllegalAccessException | SQLException e) {
-            throw new RuntimeException(e);
+        } catch (IllegalAccessException | SQLException | InvocationTargetException e) {
+            throw new DataTemplateException(e);
         }
     }
 
@@ -86,7 +92,7 @@ public class InstanceUtils<T> {
         try {
             return method.invoke(object);
         } catch (IllegalAccessException | InvocationTargetException e) {
-            throw new RuntimeException(e);
+            throw new DataTemplateException(e);
         }
     }
 }

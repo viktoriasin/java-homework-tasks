@@ -1,16 +1,15 @@
 package ru.sinvic.crm.repository;
 
-import ru.sinvic.core.repository.DataTemplate;
-import ru.sinvic.core.repository.DataTemplateException;
-import ru.sinvic.core.repository.executor.DbExecutor;
-import ru.sinvic.crm.model.Client;
-
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import ru.sinvic.core.repository.DataTemplate;
+import ru.sinvic.core.repository.DataTemplateException;
+import ru.sinvic.core.repository.executor.DbExecutor;
+import ru.sinvic.crm.model.Client;
 
 public class ClientDataTemplateJdbc implements DataTemplate<Client> {
 
