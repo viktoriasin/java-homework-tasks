@@ -3,12 +3,12 @@ package ru.sinvic.demo;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.otus.core.repository.DataTemplateHibernate;
-import ru.otus.core.repository.HibernateUtils;
-import ru.otus.core.sessionmanager.TransactionManagerHibernate;
-import ru.otus.crm.dbmigrations.MigrationsExecutorFlyway;
-import ru.otus.crm.model.Client;
-import ru.otus.crm.service.DbServiceClientImpl;
+import ru.sinvic.core.repository.DataTemplateHibernate;
+import ru.sinvic.core.repository.HibernateUtils;
+import ru.sinvic.core.sessionmanager.TransactionManagerHibernate;
+import ru.sinvic.crm.dbmigrations.MigrationsExecutorFlyway;
+import ru.sinvic.crm.model.Client;
+import ru.sinvic.crm.service.DbServiceClientImpl;
 
 public class DbServiceDemo {
 

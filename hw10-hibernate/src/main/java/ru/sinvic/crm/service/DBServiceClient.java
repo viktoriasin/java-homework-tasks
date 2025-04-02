@@ -1,6 +1,6 @@
 package ru.sinvic.crm.service;
 
-import ru.otus.crm.model.Client;
+import ru.sinvic.crm.model.Client;
 
 import java.util.List;
 import java.util.Optional;

@@ -7,15 +7,15 @@ import org.hibernate.stat.Statistics;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import ru.otus.core.repository.DataTemplateHibernate;
-import ru.otus.core.repository.HibernateUtils;
-import ru.otus.core.sessionmanager.TransactionManagerHibernate;
-import ru.otus.crm.dbmigrations.MigrationsExecutorFlyway;
-import ru.otus.crm.model.Client;
-import ru.otus.crm.service.DBServiceClient;
-import ru.otus.crm.service.DbServiceClientImpl;
+import ru.sinvic.core.repository.DataTemplateHibernate;
+import ru.sinvic.core.repository.HibernateUtils;
+import ru.sinvic.core.sessionmanager.TransactionManagerHibernate;
+import ru.sinvic.crm.dbmigrations.MigrationsExecutorFlyway;
+import ru.sinvic.crm.model.Client;
+import ru.sinvic.crm.service.DBServiceClient;
+import ru.sinvic.crm.service.DbServiceClientImpl;
 
-import static ru.otus.demo.DbServiceDemo.HIBERNATE_CFG_FILE;
+import static ru.sinvic.demo.DbServiceDemo.HIBERNATE_CFG_FILE;
 
 public abstract class AbstractHibernateTest {
     protected SessionFactory sessionFactory;

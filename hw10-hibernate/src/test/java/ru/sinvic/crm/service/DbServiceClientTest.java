@@ -3,8 +3,8 @@ package ru.sinvic.crm.service;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import ru.otus.base.AbstractHibernateTest;
-import ru.otus.crm.model.Client;
+import ru.sinvic.base.AbstractHibernateTest;
+import ru.sinvic.crm.model.Client;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

@@ -12,9 +12,9 @@ import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import ru.otus.crm.model.Address;
-import ru.otus.crm.model.Client;
-import ru.otus.crm.model.Phone;
+import ru.sinvic.crm.model.Address;
+import ru.sinvic.crm.model.Client;
+import ru.sinvic.crm.model.Phone;
 
 import java.lang.reflect.Field;
 import java.util.Collection;
