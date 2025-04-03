@@ -13,7 +13,9 @@ import ru.sinvic.core.repository.DataTemplateHibernate;
 import ru.sinvic.core.repository.HibernateUtils;
 import ru.sinvic.core.sessionmanager.TransactionManagerHibernate;
 import ru.sinvic.crm.dbmigrations.MigrationsExecutorFlyway;
+import ru.sinvic.crm.model.Address;
 import ru.sinvic.crm.model.Client;
+import ru.sinvic.crm.model.Phone;
 import ru.sinvic.crm.service.DBServiceClient;
 import ru.sinvic.crm.service.DbServiceClientImpl;
 
@@ -50,7 +52,7 @@ public abstract class AbstractHibernateTest {
         configuration.setProperty("hibernate.connection.username", dbUserName);
         configuration.setProperty("hibernate.connection.password", dbPassword);
 
-        sessionFactory = HibernateUtils.buildSessionFactory(configuration, Client.class);
+        sessionFactory = HibernateUtils.buildSessionFactory(configuration, Client.class, Address.class, Phone.class);
 
         transactionManager = new TransactionManagerHibernate(sessionFactory);
         clientTemplate = new DataTemplateHibernate<>(Client.class);

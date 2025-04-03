@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Data
 @Table(name = "phone")
-public class Phone {
+public class Phone implements Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
@@ -18,4 +18,10 @@ public class Phone {
 
     @Column(name = "number")
     private String number;
+
+    @Override
+    @SuppressWarnings({"java:S2975", "java:S1182"})
+    public Phone clone() {
+        return new Phone(id, number);
+    }
 }

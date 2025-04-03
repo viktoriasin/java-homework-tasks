@@ -40,14 +40,19 @@ public class Client implements Cloneable {
         this.name = name;
     }
 
-    public <E> Client(Long id, String name, Address address, List<Phone> phones) {
-        throw new UnsupportedOperationException();
+    public Client(Long id, String name, Address address, List<Phone> phones) {
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.phones = phones;
     }
 
     @Override
     @SuppressWarnings({"java:S2975", "java:S1182"})
     public Client clone() {
-        return new Client(this.id, this.name);
+        Address clonedAddress = this.address.clone();
+        List<Phone> clonedPhone = phones.stream().map(Phone::clone).toList();
+        return new Client(this.id, this.name, clonedAddress, clonedPhone);
     }
 
     @Override
