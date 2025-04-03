@@ -1,9 +1,8 @@
 package ru.sinvic.core.repository;
 
-import org.hibernate.Session;
-
 import java.util.List;
 import java.util.Optional;
+import org.hibernate.Session;
 
 public class DataTemplateHibernate<T> implements DataTemplate<T> {
 

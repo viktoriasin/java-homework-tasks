@@ -1,5 +1,7 @@
 package ru.sinvic.base;
 
+import static ru.sinvic.demo.DbServiceDemo.HIBERNATE_CFG_FILE;
+
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.hibernate.stat.EntityStatistics;
@@ -14,8 +16,6 @@ import ru.sinvic.crm.dbmigrations.MigrationsExecutorFlyway;
 import ru.sinvic.crm.model.Client;
 import ru.sinvic.crm.service.DBServiceClient;
 import ru.sinvic.crm.service.DbServiceClientImpl;
-
-import static ru.sinvic.demo.DbServiceDemo.HIBERNATE_CFG_FILE;
 
 public abstract class AbstractHibernateTest {
     protected SessionFactory sessionFactory;

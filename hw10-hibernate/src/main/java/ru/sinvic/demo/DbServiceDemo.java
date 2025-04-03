@@ -7,7 +7,9 @@ import ru.sinvic.core.repository.DataTemplateHibernate;
 import ru.sinvic.core.repository.HibernateUtils;
 import ru.sinvic.core.sessionmanager.TransactionManagerHibernate;
 import ru.sinvic.crm.dbmigrations.MigrationsExecutorFlyway;
+import ru.sinvic.crm.model.Address;
 import ru.sinvic.crm.model.Client;
+import ru.sinvic.crm.model.Phone;
 import ru.sinvic.crm.service.DbServiceClientImpl;
 
 public class DbServiceDemo {
@@ -25,7 +27,8 @@ public class DbServiceDemo {
 
         new MigrationsExecutorFlyway(dbUrl, dbUserName, dbPassword).executeMigrations();
 
-        var sessionFactory = HibernateUtils.buildSessionFactory(configuration, Client.class);
+        var sessionFactory =
+                HibernateUtils.buildSessionFactory(configuration, Client.class, Address.class, Phone.class);
 
         var transactionManager = new TransactionManagerHibernate(sessionFactory);
         ///

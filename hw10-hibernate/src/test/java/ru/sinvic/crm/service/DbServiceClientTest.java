@@ -1,12 +1,12 @@
 package ru.sinvic.crm.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.sinvic.base.AbstractHibernateTest;
 import ru.sinvic.crm.model.Client;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("Демо работы с hibernate (с абстракциями) должно ")
 @SuppressWarnings("java:S125")

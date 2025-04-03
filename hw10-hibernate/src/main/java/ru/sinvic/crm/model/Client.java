@@ -1,11 +1,10 @@
 package ru.sinvic.crm.model;
 
 import jakarta.persistence.*;
+import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter
@@ -22,6 +21,14 @@ public class Client implements Cloneable {
 
     @Column(name = "name")
     private String name;
+
+    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JoinColumn(name = "address_id")
+    private Address address;
+
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name = "client_id")
+    private List<Phone> phones;
 
     public Client(String name) {
         this.id = null;

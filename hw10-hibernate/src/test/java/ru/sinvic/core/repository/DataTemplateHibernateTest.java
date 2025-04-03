@@ -1,14 +1,13 @@
 package ru.sinvic.core.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.Optional;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.sinvic.base.AbstractHibernateTest;
 import ru.sinvic.crm.model.Client;
-
-import java.util.Optional;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 @SuppressWarnings("java:S125")
 class DataTemplateHibernateTest extends AbstractHibernateTest {
