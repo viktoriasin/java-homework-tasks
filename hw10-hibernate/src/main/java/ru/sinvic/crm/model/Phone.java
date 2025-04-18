@@ -1,6 +1,14 @@
 package ru.sinvic.crm.model;
 
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -18,6 +26,15 @@ public class Phone implements Cloneable {
 
     @Column(name = "number")
     private String number;
+
+    @ManyToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "client_id")
+    private Client client;
+
+    public Phone(Long id, String number) {
+        this.id = id;
+        this.number = number;
+    }
 
     @Override
     @SuppressWarnings({"java:S2975", "java:S1182"})
