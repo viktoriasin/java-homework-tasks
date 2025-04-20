@@ -12,6 +12,8 @@ import ru.sinvic.crm.model.Manager;
 import ru.sinvic.crm.service.DbServiceClientImpl;
 import ru.sinvic.crm.service.DbServiceManagerImpl;
 import ru.sinvic.jdbc.mapper.*;
+import ru.sinvic.jdbc.mapper.metadata.EntityClassMetaDataImpl;
+import ru.sinvic.jdbc.mapper.metadata.EntitySQLMetaDataImpl;
 
 @SuppressWarnings({"java:S125", "java:S1481"})
 public class HomeWork {
@@ -30,11 +32,11 @@ public class HomeWork {
 
         // Работа с клиентом
         EntityClassMetaData<Client> entityClassMetaDataClient = new EntityClassMetaDataImpl<>(Client.class);
-        EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl(entityClassMetaDataClient);
+        EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl<>(entityClassMetaDataClient);
         var dataTemplateClient = new DataTemplateJdbc<Client>(
                 dbExecutor,
                 entitySQLMetaDataClient,
-                new InstanceUtils<>(entityClassMetaDataClient)); // реализация DataTemplate, универсальная
+                new InstanceHelper<>(entityClassMetaDataClient)); // реализация DataTemplate, универсальная
 
         // Код дальше должен остаться
         var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient);
@@ -50,9 +52,9 @@ public class HomeWork {
 
         log.info("Start work for manager...");
         EntityClassMetaData<Manager> entityClassMetaDataManager = new EntityClassMetaDataImpl<>(Manager.class);
-        EntitySQLMetaData entitySQLMetaDataManager = new EntitySQLMetaDataImpl(entityClassMetaDataManager);
+        EntitySQLMetaData entitySQLMetaDataManager = new EntitySQLMetaDataImpl<>(entityClassMetaDataManager);
         var dataTemplateManager = new DataTemplateJdbc<>(
-                dbExecutor, entitySQLMetaDataManager, new InstanceUtils<>(entityClassMetaDataManager));
+                dbExecutor, entitySQLMetaDataManager, new InstanceHelper<>(entityClassMetaDataManager));
 
         var dbServiceManager = new DbServiceManagerImpl(transactionRunner, dataTemplateManager);
         dbServiceManager.saveManager(new Manager("ManagerFirst"));

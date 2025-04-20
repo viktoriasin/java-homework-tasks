@@ -1,11 +1,13 @@
-package ru.sinvic.jdbc.mapper;
+package ru.sinvic.jdbc.mapper.metadata;
 
 import java.util.List;
+import ru.sinvic.jdbc.mapper.EntityClassMetaData;
+import ru.sinvic.jdbc.mapper.EntitySQLMetaData;
 
-public class EntitySQLMetaDataImpl implements EntitySQLMetaData {
-    private final EntityClassMetaData<?> entityClassMetaData;
+public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
+    private final EntityClassMetaData<T> entityClassMetaData;
 
-    public EntitySQLMetaDataImpl(EntityClassMetaData<?> entityClassMetaData) {
+    public EntitySQLMetaDataImpl(EntityClassMetaData<T> entityClassMetaData) {
         this.entityClassMetaData = entityClassMetaData;
     }
 

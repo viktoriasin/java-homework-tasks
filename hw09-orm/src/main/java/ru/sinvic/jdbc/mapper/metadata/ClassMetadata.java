@@ -1,4 +1,4 @@
-package ru.sinvic.jdbc.mapper;
+package ru.sinvic.jdbc.mapper.metadata;
 
 import java.util.List;
 

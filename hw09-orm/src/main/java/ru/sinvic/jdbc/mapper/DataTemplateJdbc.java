@@ -16,13 +16,13 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
 
     private final DbExecutor dbExecutor;
     private final EntitySQLMetaData entitySQLMetaData;
-    private final InstanceUtils<T> instanceUtils;
+    private final InstanceHelper<T> instanceHelper;
 
     public DataTemplateJdbc(
-            DbExecutor dbExecutor, EntitySQLMetaData entitySQLMetaData, InstanceUtils<T> instanceUtils) {
+            DbExecutor dbExecutor, EntitySQLMetaData entitySQLMetaData, InstanceHelper<T> instanceHelper) {
         this.dbExecutor = dbExecutor;
         this.entitySQLMetaData = entitySQLMetaData;
-        this.instanceUtils = instanceUtils;
+        this.instanceHelper = instanceHelper;
     }
 
     @Override
@@ -30,7 +30,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         return dbExecutor.executeSelect(connection, entitySQLMetaData.getSelectByIdSql(), List.of(id), rs -> {
             try {
                 if (rs.next()) {
-                    return instanceUtils.constructNewInstanceFromResultSet(rs);
+                    return instanceHelper.constructNewInstanceFromResultSet(rs);
                 }
             } catch (Exception e) {
                 throw new DataTemplateException(e);
@@ -46,7 +46,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                     var objectsList = new ArrayList<>();
                     try {
                         while (rs.next()) {
-                            objectsList.add(instanceUtils.constructNewInstanceFromResultSet(rs));
+                            objectsList.add(instanceHelper.constructNewInstanceFromResultSet(rs));
                         }
                         return objectsList;
                     } catch (SQLException e) {
@@ -62,7 +62,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
             return dbExecutor.executeStatement(
                     connection,
                     entitySQLMetaData.getInsertSql(),
-                    instanceUtils.getValuesOfInstanceFieldsWithoutId(object));
+                    instanceHelper.getValuesOfInstanceFieldsWithoutId(object));
         } catch (Exception e) {
             throw new DataTemplateException(e);
         }
@@ -74,7 +74,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
             dbExecutor.executeStatement(
                     connection,
                     entitySQLMetaData.getUpdateSql(),
-                    instanceUtils.getValuesOfInstanceFieldsWithId(object));
+                    instanceHelper.getValuesOfInstanceFieldsWithId(object));
         } catch (Exception e) {
             throw new DataTemplateException(e);
         }

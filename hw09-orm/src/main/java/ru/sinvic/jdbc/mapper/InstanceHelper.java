@@ -10,11 +10,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import ru.sinvic.core.repository.DataTemplateException;
+import ru.sinvic.jdbc.mapper.metadata.FieldMappingMetadata;
 
-public class InstanceUtils<T> {
+public class InstanceHelper<T> {
     private final EntityClassMetaData<T> entityClassMetaData;
 
-    public InstanceUtils(EntityClassMetaData<T> entityClassMetaData) {
+    public InstanceHelper(EntityClassMetaData<T> entityClassMetaData) {
         this.entityClassMetaData = entityClassMetaData;
     }
 

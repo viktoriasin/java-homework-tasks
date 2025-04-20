@@ -1,4 +1,4 @@
-package ru.sinvic.jdbc.mapper;
+package ru.sinvic.jdbc.mapper.metadata;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
@@ -12,6 +12,7 @@ import java.util.stream.Stream;
 import ru.sinvic.core.repository.DataTemplateException;
 import ru.sinvic.jdbc.annotations.Column;
 import ru.sinvic.jdbc.annotations.Id;
+import ru.sinvic.jdbc.mapper.EntityClassMetaData;
 
 public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     private final Class<T> clazz;
