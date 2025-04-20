@@ -1,11 +1,9 @@
 package ru.sinvic.crm.model;
 
-import ru.sinvic.jdbc.annotations.GeneratedValue;
 import ru.sinvic.jdbc.annotations.Id;
 
 public class Client {
     @Id
-    @GeneratedValue
     private Long id;
 
     private String name;

@@ -1,7 +1,6 @@
 package ru.sinvic.jdbc.mapper;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.Method;
 import java.util.List;
 
 /** "Разбирает" объект на составные части */
@@ -17,6 +16,4 @@ public interface EntityClassMetaData<T> {
     List<FieldMappingMetadata> getAllFields();
 
     List<FieldMappingMetadata> getFieldsWithoutId();
-
-    List<Method> getGetterMethods();
 }

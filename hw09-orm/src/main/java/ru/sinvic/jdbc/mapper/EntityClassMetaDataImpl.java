@@ -53,22 +53,6 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         return classMetadata.fieldsWithoutId().stream().toList();
     }
 
-    @Override
-    public List<Method> getGetterMethods() {
-        try {
-            Method[] methods = clazz.getDeclaredMethods();
-            List<Method> getterMethods = new ArrayList<>();
-            for (Method method : methods) {
-                if (method.getName().startsWith("get")) {
-                    getterMethods.add(method);
-                }
-            }
-            return getterMethods;
-        } catch (Exception e) {
-            throw new DataTemplateException(e);
-        }
-    }
-
     private ClassMetadata getClassMetadata() {
         FieldMappingMetadata idField = null;
         List<FieldMappingMetadata> fieldsWithoutId = new ArrayList<>();
@@ -92,7 +76,7 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
                 .collect(Collectors.toMap(method -> uncapitilize(method.getName()), method -> method));
     }
 
-    private static String uncapitilize(String methodName) {
+    private String uncapitilize(String methodName) {
         String substring = methodName.substring(3);
         return substring.substring(0, 1).toLowerCase() + substring.substring(1);
     }

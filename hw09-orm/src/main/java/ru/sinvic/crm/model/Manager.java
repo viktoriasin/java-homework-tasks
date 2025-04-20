@@ -1,12 +1,10 @@
 package ru.sinvic.crm.model;
 
 import ru.sinvic.jdbc.annotations.Column;
-import ru.sinvic.jdbc.annotations.GeneratedValue;
 import ru.sinvic.jdbc.annotations.Id;
 
 public class Manager {
     @Id
-    @GeneratedValue
     @Column(name = "id")
     private Long no;
 
