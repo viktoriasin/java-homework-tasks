@@ -18,18 +18,66 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
     private final Class<T> clazz;
     private final ClassMetadata classMetadata;
 
+    private String name;
+    private Constructor<T> constructor;
+    private FieldMappingMetadata idField;
+    private List<FieldMappingMetadata> allFields;
+    private List<FieldMappingMetadata> allFieldsWithoutID;
+
     public EntityClassMetaDataImpl(Class<T> clazz) {
         this.clazz = clazz;
         classMetadata = getClassMetadata();
+        parseMetaData();
     }
 
     @Override
     public String getName() {
-        return clazz.getSimpleName().toLowerCase();
+        return name;
     }
 
     @Override
     public Constructor<T> getConstructor() {
+        return constructor;
+    }
+
+    @Override
+    public FieldMappingMetadata getIdField() {
+        return idField;
+    }
+
+    @Override
+    public List<FieldMappingMetadata> getAllFields() {
+        return allFields;
+    }
+
+    @Override
+    public List<FieldMappingMetadata> getFieldsWithoutId() {
+        return allFieldsWithoutID;
+    }
+
+    private void parseMetaData() {
+        name = parseName();
+        constructor = parseConstructor();
+        idField = parseIdField();
+        allFields = parseAllFields();
+        allFieldsWithoutID = parseAllFieldsWithoutId();
+    }
+
+    private List<FieldMappingMetadata> parseAllFieldsWithoutId() {
+        return classMetadata.fieldsWithoutId().stream().toList();
+    }
+
+    private List<FieldMappingMetadata> parseAllFields() {
+        Stream<FieldMappingMetadata> fieldNamesWithoutID = classMetadata.fieldsWithoutId().stream();
+        FieldMappingMetadata idName = classMetadata.idField();
+        return Stream.concat(fieldNamesWithoutID, Stream.of(idName)).toList();
+    }
+
+    private FieldMappingMetadata parseIdField() {
+        return classMetadata.idField();
+    }
+
+    private Constructor<T> parseConstructor() {
         try {
             return clazz.getConstructor();
         } catch (NoSuchMethodException e) {
@@ -37,25 +85,12 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
         }
     }
 
-    @Override
-    public FieldMappingMetadata getIdField() {
-        return classMetadata.idField();
-    }
-
-    @Override
-    public List<FieldMappingMetadata> getAllFields() {
-        Stream<FieldMappingMetadata> fieldNamesWithoutID = classMetadata.fieldsWithoutId().stream();
-        FieldMappingMetadata idName = classMetadata.idField();
-        return Stream.concat(fieldNamesWithoutID, Stream.of(idName)).toList();
-    }
-
-    @Override
-    public List<FieldMappingMetadata> getFieldsWithoutId() {
-        return classMetadata.fieldsWithoutId().stream().toList();
+    private String parseName() {
+        return clazz.getSimpleName().toLowerCase();
     }
 
     private ClassMetadata getClassMetadata() {
-        FieldMappingMetadata idField = null;
+        FieldMappingMetadata idEntityField = null;
         List<FieldMappingMetadata> fieldsWithoutId = new ArrayList<>();
         Map<String, Method> getterMethodMap = getMethods("get");
         Map<String, Method> setterMethodMap = getMethods("set");
@@ -63,12 +98,12 @@ public class EntityClassMetaDataImpl<T> implements EntityClassMetaData<T> {
             FieldMappingMetadata fieldMappingMetadata = getFieldMappingMetadata(
                     field, getterMethodMap.get(field.getName()), setterMethodMap.get(field.getName()));
             if (field.isAnnotationPresent(Id.class)) {
-                idField = fieldMappingMetadata;
+                idEntityField = fieldMappingMetadata;
             } else {
                 fieldsWithoutId.add(fieldMappingMetadata);
             }
         }
-        return new ClassMetadata(idField, fieldsWithoutId);
+        return new ClassMetadata(idEntityField, fieldsWithoutId);
     }
 
     private Map<String, Method> getMethods(String firstLettersInMethodName) {

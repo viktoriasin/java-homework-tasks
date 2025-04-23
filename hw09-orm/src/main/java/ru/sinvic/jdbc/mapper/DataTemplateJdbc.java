@@ -39,6 +39,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
         });
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     public List<T> findAll(Connection connection) {
         return (List<T>) dbExecutor
@@ -53,7 +54,7 @@ public class DataTemplateJdbc<T> implements DataTemplate<T> {
                         throw new DataTemplateException(e);
                     }
                 })
-                .orElseThrow(() -> new RuntimeException("Unexpected error"));
+                .orElseThrow(() -> new DataTemplateException(new RuntimeException()));
     }
 
     @Override
