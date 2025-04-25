@@ -1,14 +1,13 @@
 package ru.sinvic.jdbc.mapper.metadata;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import ru.sinvic.jdbc.mapper.EntityClassMetaData;
 import ru.sinvic.jdbc.mapper.EntitySQLMetaData;
 
 public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
 
-    private final Map<String, String> sqlRequestStorage = new HashMap<>();
+    private final ConcurrentHashMap<String, String> sqlRequestStorage = new ConcurrentHashMap<>();
 
     private final EntityClassMetaData<T> entityClassMetaData;
 
@@ -19,7 +18,9 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
     @Override
     public String getSelectAllSql() {
         String selectAll = "SELECT_ALL";
-        sqlRequestStorage.computeIfAbsent(selectAll, k -> "SELECT * " + " FROM " + entityClassMetaData.getName());
+        sqlRequestStorage.computeIfAbsent(
+                selectAll,
+                k -> "SELECT " + String.join(", ", getAllColumnNames()) + " FROM " + entityClassMetaData.getName());
         return sqlRequestStorage.get(selectAll);
     }
 
