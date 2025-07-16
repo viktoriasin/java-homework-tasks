@@ -1,6 +1,9 @@
 package ru.sinvic.cachehw;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.WeakHashMap;
 
 public class MyCache<K, V> implements HwCache<K, V> {
     // Надо реализовать эти методы

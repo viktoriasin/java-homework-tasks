@@ -1,9 +1,5 @@
 package ru.sinvic;
 
-import java.util.List;
-import java.util.Random;
-import java.util.stream.LongStream;
-import javax.sql.DataSource;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,6 +15,11 @@ import ru.sinvic.jdbc.mapper.EntitySQLMetaData;
 import ru.sinvic.jdbc.mapper.InstanceHelper;
 import ru.sinvic.jdbc.mapper.metadata.EntityClassMetaDataImpl;
 import ru.sinvic.jdbc.mapper.metadata.EntitySQLMetaDataImpl;
+
+import javax.sql.DataSource;
+import java.util.List;
+import java.util.Random;
+import java.util.stream.LongStream;
 
 @SuppressWarnings({"java:S125", "java:S1481", "java:S1215"})
 public class HomeWork {
@@ -39,9 +40,9 @@ public class HomeWork {
         EntityClassMetaData<Client> entityClassMetaDataClient = new EntityClassMetaDataImpl<>(Client.class);
         EntitySQLMetaData entitySQLMetaDataClient = new EntitySQLMetaDataImpl<>(entityClassMetaDataClient);
         var dataTemplateClient = new DataTemplateJdbc<Client>(
-                dbExecutor,
-                entitySQLMetaDataClient,
-                new InstanceHelper<>(entityClassMetaDataClient)); // реализация DataTemplate, универсальная
+            dbExecutor,
+            entitySQLMetaDataClient,
+            new InstanceHelper<>(entityClassMetaDataClient)); // реализация DataTemplate, универсальная
         var cache = new MyCache<Long, Client>();
         var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient, cache);
 
@@ -56,8 +57,8 @@ public class HomeWork {
     private static List<Client> createClients() {
         Random random = new Random();
         return LongStream.rangeClosed(0, 100_000)
-                .mapToObj(id -> new Client(generateRandomName(random), random.nextInt(18, 80)))
-                .toList();
+            .mapToObj(id -> new Client(generateRandomName(random), random.nextInt(18, 80)))
+            .toList();
     }
 
     private static String generateRandomName(Random random) {
@@ -79,9 +80,9 @@ public class HomeWork {
     private static void flywayMigrations(DataSource dataSource) {
         log.info("db migration started...");
         var flyway = Flyway.configure()
-                .dataSource(dataSource)
-                .locations("classpath:/db.migration")
-                .load();
+            .dataSource(dataSource)
+            .locations("classpath:/db.migration")
+            .load();
         flyway.migrate();
         log.info("db migration finished.");
         log.info("***");

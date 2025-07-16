@@ -1,12 +1,13 @@
 package ru.sinvic.crm.service;
 
-import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sinvic.core.repository.DataTemplate;
 import ru.sinvic.core.sessionmanager.TransactionRunner;
 import ru.sinvic.crm.model.Manager;
+
+import java.util.List;
+import java.util.Optional;
 
 public class DbServiceManagerImpl implements DBServiceManager {
     private static final Logger log = LoggerFactory.getLogger(DbServiceManagerImpl.class);

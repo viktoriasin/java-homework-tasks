@@ -10,7 +10,8 @@ public class Client {
 
     private int age;
 
-    public Client() {}
+    public Client() {
+    }
 
     public Client(String name, int age) {
         this.id = null;
@@ -28,12 +29,12 @@ public class Client {
         return id;
     }
 
-    public String getName() {
-        return name;
-    }
-
     public void setId(Long id) {
         this.id = id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public void setName(String name) {

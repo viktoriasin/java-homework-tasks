@@ -1,13 +1,14 @@
 package ru.sinvic.crm.service;
 
-import java.util.List;
-import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sinvic.cachehw.HwCache;
 import ru.sinvic.core.repository.DataTemplate;
 import ru.sinvic.core.sessionmanager.TransactionRunner;
 import ru.sinvic.crm.model.Client;
+
+import java.util.List;
+import java.util.Optional;
 
 public class DbServiceClientImpl implements DBServiceClient {
     private static final Logger log = LoggerFactory.getLogger(DbServiceClientImpl.class);
@@ -17,7 +18,7 @@ public class DbServiceClientImpl implements DBServiceClient {
     private final HwCache<Long, Client> cache;
 
     public DbServiceClientImpl(
-            TransactionRunner transactionRunner, DataTemplate<Client> dataTemplate, HwCache<Long, Client> cache) {
+        TransactionRunner transactionRunner, DataTemplate<Client> dataTemplate, HwCache<Long, Client> cache) {
         this.transactionRunner = transactionRunner;
         this.dataTemplate = dataTemplate;
         this.cache = cache;

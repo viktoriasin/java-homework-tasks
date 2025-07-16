@@ -1,5 +1,7 @@
 package ru.sinvic.core.repository.executor;
 
+import ru.sinvic.core.sessionmanager.DataBaseOperationException;
+
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -7,7 +9,6 @@ import java.sql.Statement;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import ru.sinvic.core.sessionmanager.DataBaseOperationException;
 
 public class DbExecutorImpl implements DbExecutor {
 
@@ -29,7 +30,7 @@ public class DbExecutorImpl implements DbExecutor {
 
     @Override
     public <T> Optional<T> executeSelect(
-            Connection connection, String sql, List<Object> params, Function<ResultSet, T> rsHandler) {
+        Connection connection, String sql, List<Object> params, Function<ResultSet, T> rsHandler) {
         try (var pst = connection.prepareStatement(sql)) {
             for (var idx = 0; idx < params.size(); idx++) {
                 pst.setObject(idx + 1, params.get(idx));
