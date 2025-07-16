@@ -1,6 +1,5 @@
 package ru.sinvic.crm.service;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
@@ -15,12 +14,10 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     private final DataTemplate<Client> dataTemplate;
     private final TransactionRunner transactionRunner;
-    private final HwCache<Long, WeakReference<Client>> cache;
+    private final HwCache<Long, Client> cache;
 
     public DbServiceClientImpl(
-            TransactionRunner transactionRunner,
-            DataTemplate<Client> dataTemplate,
-            HwCache<Long, WeakReference<Client>> cache) {
+            TransactionRunner transactionRunner, DataTemplate<Client> dataTemplate, HwCache<Long, Client> cache) {
         this.transactionRunner = transactionRunner;
         this.dataTemplate = dataTemplate;
         this.cache = cache;
@@ -43,14 +40,14 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     @Override
     public Optional<Client> getClient(long id) {
-        if (cache.get(id) != null && cache.get(id).get() != null) {
+        if (cache.get(id) != null) {
             log.info("found id {} in cache, loading from cache ..", id);
-            return Optional.ofNullable(cache.get(id).get());
+            return Optional.ofNullable(cache.get(id));
         } else {
             log.info("not found id {} in cache, loading from db ..", id);
             return transactionRunner.doInTransaction(connection -> {
                 var clientOptional = dataTemplate.findById(connection, id);
-                clientOptional.ifPresent(client -> cache.put(id, new WeakReference<>(client)));
+                clientOptional.ifPresent(client -> cache.put(id, client));
                 log.info("client: {}", clientOptional);
                 return clientOptional;
             });
