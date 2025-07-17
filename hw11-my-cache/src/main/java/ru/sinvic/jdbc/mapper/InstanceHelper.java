@@ -1,7 +1,5 @@
 package ru.sinvic.jdbc.mapper;
 
-import ru.sinvic.jdbc.mapper.metadata.FieldMappingMetadata;
-
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -10,6 +8,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import ru.sinvic.jdbc.mapper.metadata.FieldMappingMetadata;
 
 @SuppressWarnings("java:S112")
 public class InstanceHelper<T> {
@@ -27,7 +26,7 @@ public class InstanceHelper<T> {
 
     public void setFieldsOfGenericType(ResultSet rs, T o) {
         List<FieldMappingMetadata> fields =
-            entityClassMetaData.getAllFields().stream().toList();
+                entityClassMetaData.getAllFields().stream().toList();
         for (FieldMappingMetadata field : fields) {
             setField(field, o, rs);
         }
@@ -49,8 +48,8 @@ public class InstanceHelper<T> {
         String idFieldName = entityClassMetaData.getIdField().entityPropertyName();
         List<Object> valuesList = new ArrayList<>();
         for (Method method : entityClassMetaData.getFieldsWithoutId().stream()
-            .map(FieldMappingMetadata::getter)
-            .toList()) {
+                .map(FieldMappingMetadata::getter)
+                .toList()) {
             if (!method.getName().toLowerCase().endsWith(idFieldName.toLowerCase())) {
                 valuesList.add(getFieldValue(object, method));
             }

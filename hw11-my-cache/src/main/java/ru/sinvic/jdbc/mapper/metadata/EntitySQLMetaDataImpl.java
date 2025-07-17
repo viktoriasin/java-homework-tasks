@@ -1,10 +1,9 @@
 package ru.sinvic.jdbc.mapper.metadata;
 
-import ru.sinvic.jdbc.mapper.EntityClassMetaData;
-import ru.sinvic.jdbc.mapper.EntitySQLMetaData;
-
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
+import ru.sinvic.jdbc.mapper.EntityClassMetaData;
+import ru.sinvic.jdbc.mapper.EntitySQLMetaData;
 
 public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
 
@@ -20,8 +19,8 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
     public String getSelectAllSql() {
         String selectAll = "SELECT_ALL";
         sqlRequestStorage.computeIfAbsent(
-            selectAll,
-            k -> "SELECT " + String.join(", ", getAllColumnNames()) + " FROM " + entityClassMetaData.getName());
+                selectAll,
+                k -> "SELECT " + String.join(", ", getAllColumnNames()) + " FROM " + entityClassMetaData.getName());
         return sqlRequestStorage.get(selectAll);
     }
 
@@ -29,13 +28,13 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
     public String getSelectByIdSql() {
         String selectById = "SELECT_BY_ID";
         sqlRequestStorage.computeIfAbsent(
-            selectById,
-            k -> "SELECT " + String.join(", ", getAllColumnNames())
-                + " FROM "
-                + entityClassMetaData.getName()
-                + " WHERE "
-                + entityClassMetaData.getIdField().jdbcColumnName()
-                + " = " + " ? ");
+                selectById,
+                k -> "SELECT " + String.join(", ", getAllColumnNames())
+                        + " FROM "
+                        + entityClassMetaData.getName()
+                        + " WHERE "
+                        + entityClassMetaData.getIdField().jdbcColumnName()
+                        + " = " + " ? ");
         return sqlRequestStorage.get(selectById);
     }
 
@@ -50,9 +49,9 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
             sb.append("(").append(String.join(", ", allColumnNamesWithoutId)).append(")");
             sb.append(" VALUES ");
             sb.append("(")
-                .append(String.join(
-                    ", ", "?".repeat(allColumnNamesWithoutId.size()).split("")))
-                .append(")");
+                    .append(String.join(
+                            ", ", "?".repeat(allColumnNamesWithoutId.size()).split("")))
+                    .append(")");
             return sb.toString();
         });
         return sqlRequestStorage.get(insert);
@@ -67,8 +66,8 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
             sb.append(entityClassMetaData.getName());
             sb.append(" SET ");
             List<String> list = getAllColumnNamesWithoutId().stream()
-                .map(name -> name + " = ?")
-                .toList();
+                    .map(name -> name + " = ?")
+                    .toList();
             sb.append(String.join(",", list));
             sb.append(" WHERE ");
             sb.append(entityClassMetaData.getIdField().jdbcColumnName()).append(" = ?");
@@ -79,13 +78,13 @@ public class EntitySQLMetaDataImpl<T> implements EntitySQLMetaData {
 
     private List<String> getAllColumnNamesWithoutId() {
         return entityClassMetaData.getFieldsWithoutId().stream()
-            .map(FieldMappingMetadata::jdbcColumnName)
-            .toList();
+                .map(FieldMappingMetadata::jdbcColumnName)
+                .toList();
     }
 
     private List<String> getAllColumnNames() {
         return entityClassMetaData.getAllFields().stream()
-            .map(FieldMappingMetadata::jdbcColumnName)
-            .toList();
+                .map(FieldMappingMetadata::jdbcColumnName)
+                .toList();
     }
 }

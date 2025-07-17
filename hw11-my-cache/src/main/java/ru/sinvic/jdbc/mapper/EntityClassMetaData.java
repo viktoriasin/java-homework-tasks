@@ -1,9 +1,8 @@
 package ru.sinvic.jdbc.mapper;
 
-import ru.sinvic.jdbc.mapper.metadata.FieldMappingMetadata;
-
 import java.lang.reflect.Constructor;
 import java.util.List;
+import ru.sinvic.jdbc.mapper.metadata.FieldMappingMetadata;
 
 /** "Разбирает" объект на составные части */
 public interface EntityClassMetaData<T> {

@@ -3,6 +3,7 @@ package ru.sinvic;
 import org.flywaydb.core.Flyway;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import ru.sinvic.cachehw.HwListener;
 import ru.sinvic.cachehw.MyCache;
 import ru.sinvic.core.repository.executor.DbExecutorImpl;
 import ru.sinvic.core.sessionmanager.TransactionRunnerJdbc;
@@ -44,34 +45,49 @@ public class HomeWork {
             entitySQLMetaDataClient,
             new InstanceHelper<>(entityClassMetaDataClient)); // реализация DataTemplate, универсальная
         var cache = new MyCache<Long, Client>();
+        HwListener<Long, Client> listener = new HwListener<Long, Client>() {
+            @Override
+            public void notify(Long key, Client value, String action) {
+                log.info("key:{}, value:{}, action: {}", key, value, action);
+            }
+        };
+        cache.addListener(listener);
         var dbServiceClient = new DbServiceClientImpl(transactionRunner, dataTemplateClient, cache);
 
         List<Client> clientList = createClients();
+        saveClients(clientList, dbServiceClient);
+        getClientsInLoop(clientList, dbServiceClient);
+        System.gc();
+        log.info("Итоговый размер кэша: {}", cache.size());
+
+        // ИТОГ запуска: [main] INFO ru.sinvic.HomeWork -- Итоговый размер кэша: 127
+        // Видим, что потерлись все значения, кроме 127, которые закешировались в кеше логнгов через внутренние механизмы java
+    }
+
+    private static void saveClients(List<Client> clientList, DbServiceClientImpl dbServiceClient) {
         for (Client client : clientList) {
             dbServiceClient.saveClient(client);
         }
-        getClientsInLoop(clientList, dbServiceClient); // триггерит в том числе сохранение клиента в кеш
-        log.info("Итоговый размер кэша: {}", cache.size()); // Вывел [main] INFO ru.sinvic.HomeWork -- Итоговый размер кэша: 1528 --> значит кеш сбрасывается
     }
 
     private static List<Client> createClients() {
         Random random = new Random();
-        return LongStream.rangeClosed(0, 100_000)
+        return LongStream.rangeClosed(1, 100_000)
             .mapToObj(id -> new Client(generateRandomName(random), random.nextInt(18, 80)))
             .toList();
     }
 
     private static String generateRandomName(Random random) {
-        int len = random.nextInt(5, 11); // Длина имени от 5 до 10 символов
+        int len = random.nextInt(5, 11);
         char[] chars = new char[len];
         for (int i = 0; i < len; ++i) {
-            chars[i] = (char) ('a' + random.nextInt(26)); // Буква от 'a' до 'z'
+            chars[i] = (char) ('a' + random.nextInt(26));
         }
         return new String(chars);
     }
 
     private static void getClientsInLoop(List<Client> clientList, DbServiceClientImpl dbServiceClient) {
-        for (int i = 1; i < clientList.size(); i++) {
+        for (int i = 1; i < clientList.size() + 1; i++) {
             int finalI = i;
             dbServiceClient.getClient(finalI).orElseThrow(() -> new RuntimeException("Client not found, id:" + finalI));
         }

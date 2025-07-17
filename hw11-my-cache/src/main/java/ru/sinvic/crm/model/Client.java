@@ -10,8 +10,7 @@ public class Client {
 
     private int age;
 
-    public Client() {
-    }
+    public Client() {}
 
     public Client(String name, int age) {
         this.id = null;

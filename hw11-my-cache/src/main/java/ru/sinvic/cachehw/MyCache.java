@@ -13,15 +13,24 @@ public class MyCache<K, V> implements HwCache<K, V> {
     @Override
     public void put(K key, V value) {
         cache.put(key, value);
+        for (HwListener<K, V> listener : listeners) {
+            listener.notify(key, value, "put");
+        }
     }
 
     @Override
     public void remove(K key) {
         cache.remove(key);
+        for (HwListener<K, V> listener : listeners) {
+            listener.notify(key, null, "remove");
+        }
     }
 
     @Override
     public V get(K key) {
+        for (HwListener<K, V> listener : listeners) {
+            listener.notify(key, null, "get");
+        }
         return cache.get(key);
     }
 
