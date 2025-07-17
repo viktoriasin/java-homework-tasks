@@ -61,7 +61,8 @@ public class HomeWork {
         log.info("Итоговый размер кэша: {}", cache.size());
 
         // ИТОГ запуска: [main] INFO ru.sinvic.HomeWork -- Итоговый размер кэша: 127
-        // Видим, что потерлись все значения, кроме 127, которые закешировались в кеше логнгов через внутренние механизмы java
+        // Видим, что потерлись все значения, кроме 127, которые закешировались в кеше логнгов через внутренние
+        // механизмы java
     }
 
     private static void saveClients(List<Client> clientList, DbServiceClientImpl dbServiceClient) {
