@@ -4,7 +4,6 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-
 import java.io.IOException;
 
 public class AuthorizationFilter implements Filter {
@@ -18,15 +17,14 @@ public class AuthorizationFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain)
-        throws IOException, ServletException {
+            throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
 
         String uri = request.getRequestURI();
         this.context.log("Requested Resource:" + uri);
 
-        HttpSession session = request.getSession(
-            false); // хоть и называется get, по факту может создать сессию если ее еще нет и передан параметр true
+        HttpSession session = request.getSession(false);
 
         if (session == null) {
             response.sendRedirect(request.getContextPath() + "/");

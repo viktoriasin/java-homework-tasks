@@ -9,8 +9,7 @@ import java.util.Optional;
 @SuppressWarnings({"squid:S112"})
 public final class FileSystemHelper {
 
-    private FileSystemHelper() {
-    }
+    private FileSystemHelper() {}
 
     public static String localFileNameOrResourceNameToFullPath(String fileOrResourceName) {
         String path = null;
@@ -21,14 +20,14 @@ public final class FileSystemHelper {
 
         if (path == null) {
             path = Optional.ofNullable(FileSystemHelper.class.getClassLoader().getResource(fileOrResourceName))
-                .orElseThrow(() -> new RuntimeException(String.format("File \"%s\" not found", fileOrResourceName)))
-                .toExternalForm();
+                    .orElseThrow(() -> new RuntimeException(String.format("File \"%s\" not found", fileOrResourceName)))
+                    .toExternalForm();
         }
         return path;
     }
 
     public static InputStream getResourceAsStream(String resourceFileName) {
         return Optional.ofNullable(FileSystemHelper.class.getClassLoader().getResourceAsStream(resourceFileName))
-            .orElseThrow(() -> new RuntimeException(String.format("File \"%s\" not found", resourceFileName)));
+                .orElseThrow(() -> new RuntimeException(String.format("File \"%s\" not found", resourceFileName)));
     }
 }

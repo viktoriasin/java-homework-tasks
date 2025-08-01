@@ -1,6 +1,7 @@
 package ru.sinvic.server;
 
 import com.google.gson.Gson;
+import java.util.Arrays;
 import org.eclipse.jetty.ee10.servlet.FilterHolder;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
@@ -12,8 +13,6 @@ import ru.sinvic.crm.service.DBServiceClient;
 import ru.sinvic.helpers.FileSystemHelper;
 import ru.sinvic.servlet.AdminLoginServlet;
 import ru.sinvic.servlet.AuthorizationFilter;
-
-import java.util.Arrays;
 
 public class ClientWebServerImpl implements ClientWebServer {
     private static final String START_PAGE_NAME = "index.html";
@@ -66,8 +65,8 @@ public class ClientWebServerImpl implements ClientWebServer {
     protected Handler applySecurity(ServletContextHandler servletContextHandler, String... paths) {
         AuthorizationFilter authorizationFilter = new AuthorizationFilter();
         Arrays.stream(paths)
-            .forEachOrdered(
-                path -> servletContextHandler.addFilter(new FilterHolder(authorizationFilter), path, null));
+                .forEachOrdered(
+                        path -> servletContextHandler.addFilter(new FilterHolder(authorizationFilter), path, null));
         return servletContextHandler;
     }
 
@@ -76,7 +75,7 @@ public class ClientWebServerImpl implements ClientWebServer {
         resourceHandler.setDirAllowed(false);
         resourceHandler.setWelcomeFiles(START_PAGE_NAME);
         resourceHandler.setBaseResourceAsString(
-            FileSystemHelper.localFileNameOrResourceNameToFullPath(COMMON_RESOURCES_DIR));
+                FileSystemHelper.localFileNameOrResourceNameToFullPath(COMMON_RESOURCES_DIR));
         return resourceHandler;
     }
 

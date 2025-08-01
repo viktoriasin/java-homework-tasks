@@ -2,6 +2,9 @@ package ru.sinvic.demo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
@@ -18,10 +21,6 @@ import ru.sinvic.crm.service.DbServiceClientImpl;
 import ru.sinvic.helpers.FileSystemHelper;
 import ru.sinvic.server.ClientWebServer;
 import ru.sinvic.server.ClientWebServerImpl;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 
 public class WebServer {
 
