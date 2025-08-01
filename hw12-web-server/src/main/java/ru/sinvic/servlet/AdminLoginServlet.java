@@ -38,7 +38,7 @@ public class AdminLoginServlet extends HttpServlet {
         if (clientAuthService.authenticate(name, password)) {
             HttpSession session = request.getSession();
             session.setMaxInactiveInterval(MAX_INACTIVE_INTERVAL);
-            response.sendRedirect(request.getContextPath() + "/users");
+            response.sendRedirect(request.getContextPath() + "/clients");
         } else {
             response.setStatus(SC_UNAUTHORIZED);
         }

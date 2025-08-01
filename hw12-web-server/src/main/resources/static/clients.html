@@ -1,0 +1,65 @@
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Клиенты</title>
+    <script>
+        function saveClient() {
+            const clientNameTextBox = document.getElementById('clientNameTextBox').value.trim();
+            const clientAddressTextBox = document.getElementById('clientAddressTextBox').value.trim();
+            const clientPhoneTextBox = document.getElementById('clientPhoneTextBox').value.trim();
+            const clientSavedDataContainer = document.getElementById('clientSavedDataContainer');
+
+            const clientData = {
+                id: id,
+                name: clientNameTextBox,
+                address: clientAddressTextBox,
+                phone: clientPhoneTextBox
+            };
+
+            fetch(`clients`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(clientData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка при сохранении клиента.');
+                }
+                return response.json();
+            })
+            .then(savedClient => {
+                alert('Клиент успешно сохранен!');
+                clientSavedDataContainer.innerHTML = JSON.stringify(savedClient);
+            })
+            .catch(error => {
+                console.error('Ошибка:', error.message);
+                alert('Возникла ошибка при сохранении клиента.');
+            });
+
+    function getClientById() {
+            const clientIdTextBox = document.getElementById('clientIdTextBox');
+            const clientDataContainer = document.getElementById('clientDataContainer');
+            const id = clientIdTextBox.value;
+            fetch('clients/' + id)
+                .then(response => response.json())
+                .then(client => clientDataContainer.innerHTML = JSON.stringify(client));
+}
+    </script>
+</head>
+
+<body>
+<h4>Создать нового клиента</h4>
+<input type="text" id = "clientNameTextBox" placeholder="Введите имя пользователя">
+<input type="text" id = "clientAddressTextBox" placeholder="Введите адрес пользователя">
+<input type="text" id = "clientPhoneTextBox" placeholder="Введите телефон пользователя">
+<button onclick="saveClient()">Создать</button>
+<pre id = "clientSavedDataContainer"></pre>
+
+<h4>Получить данные о клиенте по id</h4>
+<input type="text" id = "clientIdTextBox" value="3" placeholder="Введите id клиента">
+<button onclick="getClientById()">Получить</button>
+<pre id = "clientDataContainer"></pre>
+
+</body>
+</html>

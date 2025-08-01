@@ -1,7 +1,6 @@
 package ru.sinvic.server;
 
 import com.google.gson.Gson;
-import java.util.Arrays;
 import org.eclipse.jetty.ee10.servlet.FilterHolder;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
@@ -13,6 +12,9 @@ import ru.sinvic.crm.service.DBServiceClient;
 import ru.sinvic.helpers.FileSystemHelper;
 import ru.sinvic.servlet.AdminLoginServlet;
 import ru.sinvic.servlet.AuthorizationFilter;
+import ru.sinvic.servlet.ClientServlet;
+
+import java.util.Arrays;
 
 public class ClientWebServerImpl implements ClientWebServer {
     private static final String START_PAGE_NAME = "index.html";
@@ -20,14 +22,14 @@ public class ClientWebServerImpl implements ClientWebServer {
 
     private final DBServiceClient dbServiceClient;
     private final Gson gson;
-    //    protected final TemplateProcessor templateProcessor;
+    protected final TemplateProcessor templateProcessor;
     private final Server server;
     private final ClientAuthService authService;
 
     public ClientWebServerImpl(int port, DBServiceClient dbServiceClient, Gson gson, ClientAuthService authService) {
         this.dbServiceClient = dbServiceClient;
         this.gson = gson;
-        //        this.templateProcessor = templateProcessor;
+        this.templateProcessor = templateProcessor;
         server = new Server(port);
         this.authService = authService;
     }
@@ -57,7 +59,7 @@ public class ClientWebServerImpl implements ClientWebServer {
 
         Handler.Sequence sequence = new Handler.Sequence();
         sequence.addHandler(resourceHandler);
-        sequence.addHandler(applySecurity(servletContextHandler, "/users"));
+        sequence.addHandler(applySecurity(servletContextHandler, "/clients", "/api/client"));
         server.setHandler(sequence);
     }
 
@@ -82,8 +84,10 @@ public class ClientWebServerImpl implements ClientWebServer {
     private ServletContextHandler createServletContextHandler() {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContextHandler.addServlet(new ServletHolder(new AdminLoginServlet(authService)), "/");
-        //        servletContextHandler.addServlet(new ServletHolder(new ClientServlet(templateProcessor,
-        // dbServiceClient)), "/users");
+        servletContextHandler.addServlet(new ServletHolder(new ClientServlet(templateProcessor,
+            dbServiceClient)), "/clients");
+        servletContextHandler.addServlet(new ServletHolder(new ClientServlet(templateProcessor,
+            dbServiceClient)), "/api/client");
         return servletContextHandler;
     }
 }
