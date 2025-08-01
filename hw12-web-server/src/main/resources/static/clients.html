@@ -1,5 +1,8 @@
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html lang="ru">
 <head>
+    <meta charset="utf-8">
+    <title>Клиенты</title>
     <title>Клиенты</title>
     <script>
         function saveClient() {
@@ -46,20 +49,93 @@
                 .then(client => clientDataContainer.innerHTML = JSON.stringify(client));
 }
     </script>
+
+    <style>
+        /* Основной стиль для всей формы */
+        .form-container {
+            width: 400px; /* Ширина формы */
+            margin: 0 auto; /* Центруем форму по центру экрана */
+            padding: 20px; /* Внутренний отступ вокруг формы */
+            border-radius: 8px; /* Округлые углы */
+            background-color: #f9f9f9; /* Фон формы */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Мягкая тень */
+        }
+
+        /* Оформление полей ввода */
+        label {
+            display: block; /* Каждый лейбл начинается с новой строки */
+            font-weight: bold; /* Жирный шрифт для подписей */
+            color: #333; /* Цвет подписи */
+            margin-bottom: 5px; /* Небольшой отступ снизу */
+        }
+
+        input[type="text"] {
+            width: 100%; /* Поля занимают всю ширину родителя */
+            height: 35px; /* Высота полей */
+            padding: 10px; /* Внутренние отступы */
+            border: 1px solid #ccc; /* Тонкая рамка */
+            border-radius: 4px; /* Округлая граница */
+            margin-bottom: 15px; /* Расстояние между полями */
+        }
+
+        button {
+            width: 100%;
+            height: 40px;
+            background-color: #007bff; /* Голубой фон кнопки */
+            color: white; /* Белый текст */
+            border: none; /* Без границ */
+            cursor: pointer; /* Курсор меняется на руку */
+            border-radius: 4px; /* Округлость углов */
+        }
+
+        button:hover {
+            background-color: #0056b3; /* Более тёмный оттенок фона при наведении */
+        }
+
+        pre {
+            text-align: center; /* Центрирование текста */
+            color: green; /* Зелёный цвет для успеха */
+            font-size: 16px; /* Увеличенный размер шрифта */
+            margin-top: 20px; /* Отступ сверху */
+        }
+        .container {
+            display: flex; /* Flexbox для горизонтального размещения */
+            justify-content: space-between; /* Равномерное распределение */
+            gap: 20px; /* Интервал между формами */
+        }
+    </style>
 </head>
 
 <body>
-<h4>Создать нового клиента</h4>
-<input type="text" id = "clientNameTextBox" placeholder="Введите имя пользователя">
-<input type="text" id = "clientAddressTextBox" placeholder="Введите адрес пользователя">
-<input type="text" id = "clientPhoneTextBox" placeholder="Введите телефон пользователя">
-<button onclick="saveClient()">Создать</button>
-<pre id = "clientSavedDataContainer"></pre>
+<div class="container">
+    <div class="form-container">
+        <h4>Создать нового клиента</h4>
 
-<h4>Получить данные о клиенте по id</h4>
-<input type="text" id = "clientIdTextBox" value="3" placeholder="Введите id клиента">
-<button onclick="getClientById()">Получить</button>
-<pre id = "clientDataContainer"></pre>
+        <label>Введите имя пользователя:</label>
+        <input type="text" id="clientNameTextBox">
+
+        <label>Введите адрес пользователя:</label>
+        <input type="text" id="clientAddressTextBox">
+
+        <label>Введите телефон пользователя:</label>
+        <input type="text" id="clientPhoneTextBox">
+
+        <button onclick="saveClient()">Создать</button>
+
+        <pre id="clientSavedDataContainer"></pre>
+    </div>
+
+    <div class="form-container">
+        <h4>Получить данные о клиенте по id</h4>
+
+        <label>Введите id клиента:</label>
+        <input type="text" id="clientIdTextBox" value="3" placeholder="Введите id клиента">
+
+        <button onclick="getClientById()">Получить</button>
+
+        <pre id="clientDataContainer"></pre>
+    </div>
+</div>
 
 </body>
 </html>
