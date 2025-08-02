@@ -49,6 +49,17 @@
                     alert('Возникла ошибка при получении данных о клиенте.');
                 });
         }
+
+        function getClients() {
+            const clientsDataContainer = document.getElementById('clientsDataContainer');
+            fetch(`/api/clients`)
+                .then(response => response.json())
+                .then(user => clientsDataContainer.innerHTML = JSON.stringify(user))
+                .catch(error => {
+                    console.error('Ошибка:', error.message);
+                    alert('Возникла ошибка при получении списка клиентов.');
+                });
+        }
     </script>
 
     <style>
@@ -136,6 +147,14 @@
 
         <pre id="clientDataContainer"></pre>
     </div>
+</div>
+
+<div class="form-container">
+    <h4>Вывести список клиентов</h4>
+
+    <label>Введите id клиента:</label>
+
+    <pre id="clientsDataContainer"></pre>
 </div>
 
 </body>

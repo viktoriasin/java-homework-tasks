@@ -1,6 +1,7 @@
 package ru.sinvic.server;
 
 import com.google.gson.Gson;
+import java.util.Arrays;
 import org.eclipse.jetty.ee10.servlet.FilterHolder;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
@@ -10,12 +11,7 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import ru.sinvic.crm.service.ClientAuthService;
 import ru.sinvic.crm.service.DBServiceClient;
 import ru.sinvic.helpers.FileSystemHelper;
-import ru.sinvic.servlet.AdminLoginServlet;
-import ru.sinvic.servlet.AuthorizationFilter;
-import ru.sinvic.servlet.ClientsApiServlet;
-import ru.sinvic.servlet.ClientsServlet;
-
-import java.util.Arrays;
+import ru.sinvic.servlet.*;
 
 public class ClientWebServerImpl implements ClientWebServer {
     private static final String START_PAGE_NAME = "index.html";
@@ -87,7 +83,9 @@ public class ClientWebServerImpl implements ClientWebServer {
         servletContextHandler.addServlet(new ServletHolder(new AdminLoginServlet(authService)), "/");
         servletContextHandler.addServlet(new ServletHolder(new ClientsServlet()), "/clients");
         servletContextHandler.addServlet(
-            new ServletHolder(new ClientsApiServlet(gson, dbServiceClient)), "/api/client/*");
+                new ServletHolder(new ClientApiServlet(gson, dbServiceClient)), "/api/client/*");
+        servletContextHandler.addServlet(
+                new ServletHolder(new ClientsApiServlet(gson, dbServiceClient)), "/api/clients");
         return servletContextHandler;
     }
 }
