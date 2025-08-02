@@ -5,10 +5,11 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.util.List;
 import ru.sinvic.crm.model.Client;
 import ru.sinvic.crm.service.DBServiceClient;
+
+import java.io.IOException;
+import java.util.List;
 
 public class ClientsApiServlet extends HttpServlet {
     private final transient DBServiceClient dbServiceClient;

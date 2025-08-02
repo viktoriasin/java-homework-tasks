@@ -2,10 +2,11 @@ package ru.sinvic.crm.model;
 
 import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -34,16 +35,6 @@ public class Client implements Cloneable {
     @Expose
     private List<Phone> phones;
 
-    public void addPhone(Phone phone) {
-        phones.add(phone);
-        phone.setClient(this);
-    }
-
-    public void removePhone(Phone phone) {
-        phones.remove(phone);
-        phone.setClient(null);
-    }
-
     public Client(String name) {
         this.id = null;
         this.name = name;
@@ -62,6 +53,16 @@ public class Client implements Cloneable {
         for (Phone phone : this.phones) {
             phone.setClient(this);
         }
+    }
+
+    public void addPhone(Phone phone) {
+        phones.add(phone);
+        phone.setClient(this);
+    }
+
+    public void removePhone(Phone phone) {
+        phones.remove(phone);
+        phone.setClient(null);
     }
 
     @Override

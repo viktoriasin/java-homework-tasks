@@ -1,8 +1,5 @@
 package ru.sinvic.servlet;
 
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static jakarta.servlet.http.HttpServletResponse.SC_OK;
-
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -10,11 +7,15 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
-import java.io.IOException;
 import ru.sinvic.core.sessionmanager.DataBaseOperationException;
 import ru.sinvic.crm.model.Client;
 import ru.sinvic.crm.service.DBServiceClient;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 public class ClientApiServlet extends HttpServlet {
 
@@ -26,6 +27,16 @@ public class ClientApiServlet extends HttpServlet {
     public ClientApiServlet(Gson gson, DBServiceClient dbServiceClient) {
         this.dbServiceClient = dbServiceClient;
         this.gson = gson;
+    }
+
+    private static String extractBodyContentFromRequest(HttpServletRequest request) throws IOException {
+        BufferedReader reader = request.getReader();
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = reader.readLine()) != null) {
+            builder.append(line);
+        }
+        return builder.toString();
     }
 
     @Override
@@ -72,16 +83,6 @@ public class ClientApiServlet extends HttpServlet {
         String[] path = request.getPathInfo().split("/");
         String id = (path.length > 1) ? path[ID_PATH_PARAM_POSITION] : String.valueOf(-1);
         return Long.parseLong(id);
-    }
-
-    private static String extractBodyContentFromRequest(HttpServletRequest request) throws IOException {
-        BufferedReader reader = request.getReader();
-        StringBuilder builder = new StringBuilder();
-        String line;
-        while ((line = reader.readLine()) != null) {
-            builder.append(line);
-        }
-        return builder.toString();
     }
 
     private void handleErrorResponse(HttpServletResponse response, String message, Throwable e) {

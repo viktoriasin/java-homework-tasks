@@ -2,9 +2,6 @@ package ru.sinvic.demo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.IOException;
-import java.io.InputStream;
-import java.util.Properties;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
@@ -22,12 +19,16 @@ import ru.sinvic.helpers.FileSystemHelper;
 import ru.sinvic.server.ClientWebServer;
 import ru.sinvic.server.ClientWebServerImpl;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Properties;
+
 public class WebServer {
 
     public static final String PROPERTIES_FILE_PATH = "config.properties";
+    public static final String HIBERNATE_CFG_FILE = "hibernate.cfg.xml";
     private static final Logger log = LoggerFactory.getLogger(WebServer.class);
     private static final int WEB_SERVER_PORT = 8080;
-    public static final String HIBERNATE_CFG_FILE = "hibernate.cfg.xml";
     private static final String TEMPLATES_DIR = "/templates/";
 
     public static void main(String[] args) throws Exception {
@@ -43,10 +44,10 @@ public class WebServer {
         ///
 
         Gson gson = new GsonBuilder()
-                .excludeFieldsWithoutExposeAnnotation()
-                .serializeNulls()
-                .setPrettyPrinting()
-                .create();
+            .excludeFieldsWithoutExposeAnnotation()
+            .serializeNulls()
+            .setPrettyPrinting()
+            .create();
         //        TemplateProcessor templateProcessor = new TemplateProcessorImpl(TEMPLATES_DIR);
         var properties = getPropertiesFile();
         var username = properties.getProperty("admin.username");
