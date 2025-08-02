@@ -1,10 +1,12 @@
 package ru.sinvic.crm.model;
 
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
-import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -17,16 +19,20 @@ public class Client implements Cloneable {
     @SequenceGenerator(name = "client_gen", sequenceName = "client_seq", initialValue = 1, allocationSize = 1)
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_gen")
     @Column(name = "id")
+    @Expose
     private Long id;
 
     @Column(name = "name")
+    @Expose
     private String name;
 
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "address_id")
+    @Expose
     private Address address;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER, mappedBy = "client")
+    @Expose
     private List<Phone> phones;
 
     public void addPhone(Phone phone) {

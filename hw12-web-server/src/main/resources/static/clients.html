@@ -9,16 +9,14 @@
             const clientNameTextBox = document.getElementById('clientNameTextBox').value.trim();
             const clientAddressTextBox = document.getElementById('clientAddressTextBox').value.trim();
             const clientPhoneTextBox = document.getElementById('clientPhoneTextBox').value.trim();
-            const clientSavedDataContainer = document.getElementById('clientSavedDataContainer');
 
             const clientData = {
-                id: id,
                 name: clientNameTextBox,
-                address: clientAddressTextBox,
-                phone: clientPhoneTextBox
+                address: {street: clientAddressTextBox},
+                phones: [{number: clientPhoneTextBox}]
             };
 
-            fetch(`clients`, {
+            fetch('/api/client', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -33,21 +31,24 @@
             })
             .then(savedClient => {
                 alert('Клиент успешно сохранен!');
-                clientSavedDataContainer.innerHTML = JSON.stringify(savedClient);
             })
             .catch(error => {
                 console.error('Ошибка:', error.message);
                 alert('Возникла ошибка при сохранении клиента.');
             });
+        }
 
-    function getClientById() {
-            const clientIdTextBox = document.getElementById('clientIdTextBox');
+        function getClientById() {
+            const clientIdTextBox = document.getElementById('clientIdTextBox').value.trim();
             const clientDataContainer = document.getElementById('clientDataContainer');
-            const id = clientIdTextBox.value;
-            fetch('clients/' + id)
+            fetch(`/api/client/${clientIdTextBox}`)
                 .then(response => response.json())
-                .then(client => clientDataContainer.innerHTML = JSON.stringify(client));
-}
+                .then(user => clientDataContainer.innerHTML = JSON.stringify(user))
+                .catch(error => {
+                    console.error('Ошибка:', error.message);
+                    alert('Возникла ошибка при получении данных о клиенте.');
+                });
+        }
     </script>
 
     <style>

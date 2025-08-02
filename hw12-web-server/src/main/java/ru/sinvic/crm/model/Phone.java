@@ -1,5 +1,6 @@
 package ru.sinvic.crm.model;
 
+import com.google.gson.annotations.Expose;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,9 +15,11 @@ public class Phone implements Cloneable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id")
+    @Expose
     private Long id;
 
     @Column(name = "number")
+    @Expose
     private String number;
 
     @ManyToOne(cascade = CascadeType.ALL)

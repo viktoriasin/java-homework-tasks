@@ -1,7 +1,6 @@
 package ru.sinvic.server;
 
 import com.google.gson.Gson;
-import java.util.Arrays;
 import org.eclipse.jetty.ee10.servlet.FilterHolder;
 import org.eclipse.jetty.ee10.servlet.ServletContextHandler;
 import org.eclipse.jetty.ee10.servlet.ServletHolder;
@@ -13,7 +12,10 @@ import ru.sinvic.crm.service.DBServiceClient;
 import ru.sinvic.helpers.FileSystemHelper;
 import ru.sinvic.servlet.AdminLoginServlet;
 import ru.sinvic.servlet.AuthorizationFilter;
+import ru.sinvic.servlet.ClientsApiServlet;
 import ru.sinvic.servlet.ClientsServlet;
+
+import java.util.Arrays;
 
 public class ClientWebServerImpl implements ClientWebServer {
     private static final String START_PAGE_NAME = "index.html";
@@ -84,8 +86,8 @@ public class ClientWebServerImpl implements ClientWebServer {
         ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
         servletContextHandler.addServlet(new ServletHolder(new AdminLoginServlet(authService)), "/");
         servletContextHandler.addServlet(new ServletHolder(new ClientsServlet()), "/clients");
-        //        servletContextHandler.addServlet(new ServletHolder(new ClientApiServlet(templateProcessor,
-        //            dbServiceClient)), "/api/client");
+        servletContextHandler.addServlet(
+            new ServletHolder(new ClientsApiServlet(gson, dbServiceClient)), "/api/client/*");
         return servletContextHandler;
     }
 }
