@@ -1,15 +1,14 @@
 package ru.sinvic.servlet;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import ru.sinvic.crm.service.ClientAuthService;
-
 import java.io.IOException;
-
-import static jakarta.servlet.http.HttpServletResponse.SC_UNAUTHORIZED;
+import ru.sinvic.crm.service.ClientAuthService;
 
 public class AdminLoginServlet extends HttpServlet {
 
@@ -25,7 +24,7 @@ public class AdminLoginServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
-        throws ServletException, IOException {
+            throws ServletException, IOException {
         response.setContentType("text/html");
         response.sendRedirect(request.getContextPath() + "/");
     }

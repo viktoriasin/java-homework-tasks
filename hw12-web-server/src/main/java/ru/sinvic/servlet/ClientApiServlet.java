@@ -1,5 +1,8 @@
 package ru.sinvic.servlet;
 
+import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
+import static jakarta.servlet.http.HttpServletResponse.SC_OK;
+
 import com.google.gson.Gson;
 import com.google.gson.JsonIOException;
 import com.google.gson.JsonSyntaxException;
@@ -7,15 +10,11 @@ import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
+import java.io.IOException;
 import ru.sinvic.core.sessionmanager.DataBaseOperationException;
 import ru.sinvic.crm.model.Client;
 import ru.sinvic.crm.service.DBServiceClient;
-
-import java.io.BufferedReader;
-import java.io.IOException;
-
-import static jakarta.servlet.http.HttpServletResponse.SC_INTERNAL_SERVER_ERROR;
-import static jakarta.servlet.http.HttpServletResponse.SC_OK;
 
 public class ClientApiServlet extends HttpServlet {
 
