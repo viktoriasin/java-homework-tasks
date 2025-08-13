@@ -27,8 +27,8 @@ allprojects {
     group = "ru.sinvic"
 
     repositories {
-        mavenLocal()
         mavenCentral()
+        mavenLocal()
     }
 
     val testcontainersBom: String by project
