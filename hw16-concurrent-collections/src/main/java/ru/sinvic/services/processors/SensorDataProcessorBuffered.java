@@ -6,10 +6,10 @@ import ru.sinvic.api.SensorDataProcessor;
 import ru.sinvic.api.model.SensorData;
 import ru.sinvic.lib.SensorDataBufferedWriter;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.concurrent.ConcurrentSkipListSet;
+import java.util.concurrent.ArrayBlockingQueue;
 
 // Этот класс нужно реализовать
 @SuppressWarnings({"java:S1068", "java:S125"})
@@ -18,8 +18,7 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
 
     private final int bufferSize;
     private final SensorDataBufferedWriter writer;
-    private final Set<SensorData> dataBuffer =
-        new ConcurrentSkipListSet<>(Comparator.comparing(SensorData::getMeasurementTime));
+    private final ArrayBlockingQueue<SensorData> dataBuffer = new ArrayBlockingQueue<>(3000);
 
     public SensorDataProcessorBuffered(int bufferSize, SensorDataBufferedWriter writer) {
         this.bufferSize = bufferSize;
@@ -27,19 +26,22 @@ public class SensorDataProcessorBuffered implements SensorDataProcessor {
     }
 
     @Override
-    public synchronized void process(SensorData data) {
+    public void process(SensorData data) {
         dataBuffer.add(data);
         if (dataBuffer.size() >= bufferSize) {
             flush();
         }
     }
 
-    public synchronized void flush() {
+    public void flush() {
         if (!dataBuffer.isEmpty()) {
-            List<SensorData> bufferedData = dataBuffer.stream().toList();
-            dataBuffer.clear();
+            List<SensorData> bufferedData = new ArrayList<>();
+            dataBuffer.drainTo(bufferedData);
+            bufferedData.sort(Comparator.comparing(SensorData::getMeasurementTime));
             try {
-                writer.writeBufferedData(bufferedData);
+                if (!bufferedData.isEmpty()) {
+                    writer.writeBufferedData(bufferedData);
+                }
             } catch (Exception e) {
                 log.error("Ошибка в процессе записи буфера", e);
             }
