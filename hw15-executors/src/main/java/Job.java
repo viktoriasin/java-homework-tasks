@@ -1,5 +1,5 @@
 public class Job implements Runnable {
-    final Object monitor = new Object();
+    private final Object monitor = new Object();
     private final String firstThreadName;
     private boolean firstThreadIsStarted = false;
 
