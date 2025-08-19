@@ -1,4 +1,4 @@
-package server;
+package ru.sinvic.server;
 
 import io.grpc.stub.StreamObserver;
 import java.util.concurrent.Executors;

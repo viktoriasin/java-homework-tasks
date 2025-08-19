@@ -1,4 +1,4 @@
-package server;
+package ru.sinvic.server;
 
 import io.grpc.ServerBuilder;
 import java.io.IOException;
