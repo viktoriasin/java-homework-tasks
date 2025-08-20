@@ -1,6 +1,12 @@
 package ru.sinvic;
 
-import org.junit.jupiter.api.Disabled;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
+import java.io.PrintStream;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -11,33 +17,25 @@ import ru.sinvic.appcontainer.api.AppComponentsContainerConfig;
 import ru.sinvic.config.AppConfig;
 import ru.sinvic.services.*;
 
-import java.io.PrintStream;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Scanner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-
 class AppTest {
 
-    @Disabled("Эту аннотацию надо убрать")
+    //    @Disabled("Эту аннотацию надо убрать")
     @DisplayName("Из контекста тремя способами должен корректно доставаться компонент с проставленными полями")
     @ParameterizedTest(name = "Достаем по: {0}")
     @CsvSource(
             value = {
-                "GameProcessor, ru.otus.services.GameProcessor",
-                "GameProcessorImpl, ru.otus.services.GameProcessor",
-                "gameProcessor, ru.otus.services.GameProcessor",
-                "IOService, ru.otus.services.IOService",
-                "IOServiceStreams, ru.otus.services.IOService",
-                "ioService, ru.otus.services.IOService",
-                "PlayerService, ru.otus.services.PlayerService",
-                "PlayerServiceImpl, ru.otus.services.PlayerService",
-                "playerService, ru.otus.services.PlayerService",
-                "EquationPreparer, ru.otus.services.EquationPreparer",
-                "EquationPreparerImpl, ru.otus.services.EquationPreparer",
-                "equationPreparer, ru.otus.services.EquationPreparer"
+                "GameProcessor, ru.sinvic.services.GameProcessor",
+                "GameProcessorImpl, ru.sinvic.services.GameProcessor",
+                "gameProcessor, ru.sinvic.services.GameProcessor",
+                "IOService, ru.sinvic.services.IOService",
+                "IOServiceStreams, ru.sinvic.services.IOService",
+                "ioService, ru.sinvic.services.IOService",
+                "PlayerService, ru.sinvic.services.PlayerService",
+                "PlayerServiceImpl, ru.sinvic.services.PlayerService",
+                "playerService, ru.sinvic.services.PlayerService",
+                "EquationPreparer, ru.sinvic.services.EquationPreparer",
+                "EquationPreparerImpl, ru.sinvic.services.EquationPreparer",
+                "equationPreparer, ru.sinvic.services.EquationPreparer"
             })
     void shouldExtractFromContextCorrectComponentWithNotNullFields(String classNameOrBeanId, Class<?> rootClass)
             throws Exception {
@@ -74,7 +72,7 @@ class AppTest {
         }
     }
 
-    @Disabled("Эту аннотацию надо убрать")
+    //    @Disabled("Эту аннотацию надо убрать")
     @DisplayName("В контексте не должно быть компонентов с одинаковым именем")
     @Test
     void shouldNotAllowTwoComponentsWithSameName() {
@@ -82,7 +80,7 @@ class AppTest {
                 .isInstanceOf(Exception.class);
     }
 
-    @Disabled("Эту аннотацию надо убрать")
+    //    @Disabled("Эту аннотацию надо убрать")
     @DisplayName(
             "При попытке достать из контекста отсутствующий или дублирующийся компонент, должно выкидываться исключение")
     @Test

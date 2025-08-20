@@ -1,10 +1,9 @@
 package ru.sinvic.services;
 
+import java.util.List;
 import ru.sinvic.model.Equation;
 import ru.sinvic.model.GameResult;
 import ru.sinvic.model.Player;
-
-import java.util.List;
 
 public class GameProcessorImpl implements GameProcessor {
 

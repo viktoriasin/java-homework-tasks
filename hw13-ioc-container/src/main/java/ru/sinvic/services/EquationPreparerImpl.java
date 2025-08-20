@@ -1,12 +1,11 @@
 package ru.sinvic.services;
 
-import ru.sinvic.model.DivisionEquation;
-import ru.sinvic.model.Equation;
-import ru.sinvic.model.MultiplicationEquation;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import ru.sinvic.model.DivisionEquation;
+import ru.sinvic.model.Equation;
+import ru.sinvic.model.MultiplicationEquation;
 
 public class EquationPreparerImpl implements EquationPreparer {
     @Override
