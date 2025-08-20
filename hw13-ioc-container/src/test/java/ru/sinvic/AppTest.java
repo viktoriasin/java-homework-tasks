@@ -1,12 +1,5 @@
 package ru.sinvic;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
-
-import java.io.PrintStream;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -17,9 +10,16 @@ import ru.sinvic.appcontainer.api.AppComponentsContainerConfig;
 import ru.sinvic.config.AppConfig;
 import ru.sinvic.services.*;
 
+import java.io.PrintStream;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Scanner;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
 class AppTest {
 
-    //    @Disabled("Эту аннотацию надо убрать")
     @DisplayName("Из контекста тремя способами должен корректно доставаться компонент с проставленными полями")
     @ParameterizedTest(name = "Достаем по: {0}")
     @CsvSource(
@@ -44,7 +44,7 @@ class AppTest {
         assertThat(classNameOrBeanId).isNotEmpty();
         Object component;
         if (classNameOrBeanId.charAt(0) == classNameOrBeanId.toUpperCase().charAt(0)) {
-            Class<?> gameProcessorClass = Class.forName("ru.otus.services." + classNameOrBeanId);
+            Class<?> gameProcessorClass = Class.forName("ru.sinvic.services." + classNameOrBeanId);
             assertThat(rootClass).isAssignableFrom(gameProcessorClass);
 
             component = ctx.getAppComponent(gameProcessorClass);
@@ -72,7 +72,6 @@ class AppTest {
         }
     }
 
-    //    @Disabled("Эту аннотацию надо убрать")
     @DisplayName("В контексте не должно быть компонентов с одинаковым именем")
     @Test
     void shouldNotAllowTwoComponentsWithSameName() {
@@ -80,7 +79,6 @@ class AppTest {
                 .isInstanceOf(Exception.class);
     }
 
-    //    @Disabled("Эту аннотацию надо убрать")
     @DisplayName(
             "При попытке достать из контекста отсутствующий или дублирующийся компонент, должно выкидываться исключение")
     @Test

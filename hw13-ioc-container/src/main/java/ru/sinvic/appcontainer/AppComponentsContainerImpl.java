@@ -1,13 +1,12 @@
 package ru.sinvic.appcontainer;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
 import ru.sinvic.appcontainer.api.AppComponent;
 import ru.sinvic.appcontainer.api.AppComponentsContainer;
 import ru.sinvic.appcontainer.api.AppComponentsContainerConfig;
-import ru.sinvic.services.IOService;
-import ru.sinvic.services.IOServiceStreams;
+
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 @SuppressWarnings("squid:S1068")
 public class AppComponentsContainerImpl implements AppComponentsContainer {
@@ -15,6 +14,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
     private final ConfigMethodsMetadata configMethodsMetadata = new ConfigMethodsMetadata();
+    private final Set<String> componentNames = new HashSet<>();
 
     public AppComponentsContainerImpl(Class<?> initialConfigClass) {
         processConfig(initialConfigClass);
@@ -22,17 +22,29 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
 
     @Override
     public <C> C getAppComponent(Class<C> componentClass) {
+        C componentForReturn = null;
         for (Object component : appComponents) {
             if (componentClass.isAssignableFrom(component.getClass())) {
-                return (C) component;
+                if (componentForReturn != null) {
+                    throw new RuntimeException(String.format(
+                        "Two component with the same type in container are prohibited! Type: %s", componentClass));
+                }
+                componentForReturn = (C) component;
             }
         }
-        return null;
+        if (componentForReturn == null) {
+            throw new RuntimeException(String.format("Component %s is not found in container", componentClass));
+        }
+        return componentForReturn;
     }
 
     @Override
     public <C> C getAppComponent(String componentName) {
-        return (C) appComponentsByName.get(componentName);
+        C c = (C) appComponentsByName.get(componentName);
+        if (c == null) {
+            throw new RuntimeException(String.format("Component %s is not found in container", componentName));
+        }
+        return c;
     }
 
     private void processConfig(Class<?> configClass) {
@@ -63,8 +75,6 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         List<Object> parameters = new ArrayList<>();
         for (Class<?> parameterCLass : parameterTypes) {
             for (Object component : appComponents) {
-                IOServiceStreams x = new IOServiceStreams(System.out, System.in);
-                IOService l = x;
                 if (parameterCLass.isAssignableFrom(component.getClass())) {
                     parameters.add(component);
                 }
@@ -115,7 +125,13 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         public void addMethodMetadata(Method method) {
             if (method.isAnnotationPresent(AppComponent.class)) {
                 AppComponent annotation = method.getAnnotation(AppComponent.class);
-                methods.add(new MethodMetadata(annotation.order(), annotation.name(), method));
+                String componentName = annotation.name();
+                if (componentNames.contains(componentName)) {
+                    throw new RuntimeException(
+                        String.format("Two components with the same name %s are prohibited!", componentName));
+                }
+                methods.add(new MethodMetadata(annotation.order(), componentName, method));
+                componentNames.add(componentName);
             }
         }
 
