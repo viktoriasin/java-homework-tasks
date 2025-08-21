@@ -2,10 +2,13 @@ package ru.sinvic.config;
 
 import ru.sinvic.appcontainer.api.AppComponent;
 import ru.sinvic.appcontainer.api.AppComponentsContainerConfig;
-import ru.sinvic.services.*;
+import ru.sinvic.services.EquationPreparer;
+import ru.sinvic.services.EquationPreparerImpl;
+import ru.sinvic.services.IOService;
+import ru.sinvic.services.IOServiceStreams;
 
 @AppComponentsContainerConfig(order = 1)
-public class AppConfig {
+public class AppConfig1 {
 
     @AppComponent(order = 0, name = "equationPreparer")
     public EquationPreparer equationPreparer() {
@@ -16,16 +19,5 @@ public class AppConfig {
     @AppComponent(order = 0, name = "ioService")
     public IOService ioService() {
         return new IOServiceStreams(System.out, System.in);
-    }
-
-    @AppComponent(order = 1, name = "playerService")
-    public PlayerService playerService(IOService ioService) {
-        return new PlayerServiceImpl(ioService);
-    }
-
-    @AppComponent(order = 2, name = "gameProcessor")
-    public GameProcessor gameProcessor(
-        IOService ioService, PlayerService playerService, EquationPreparer equationPreparer) {
-        return new GameProcessorImpl(ioService, equationPreparer, playerService);
     }
 }

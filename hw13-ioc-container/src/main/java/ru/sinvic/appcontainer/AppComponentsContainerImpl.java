@@ -1,11 +1,12 @@
 package ru.sinvic.appcontainer;
 
-import java.util.*;
 import ru.sinvic.appcontainer.api.AppComponentsContainer;
 import ru.sinvic.appcontainer.model.*;
 import ru.sinvic.appcontainer.utils.ComponentInitializer;
 import ru.sinvic.appcontainer.utils.ConfigParser;
 import ru.sinvic.appcontainer.utils.ConfigsParser;
+
+import java.util.*;
 
 @SuppressWarnings("squid:S1068")
 public class AppComponentsContainerImpl implements AppComponentsContainer {
@@ -25,11 +26,13 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         for (ConfigsExecutionMetadata configsExecutionMetadata : parsedConfigs) {
             configsExecutionMetadataExecutionProcessingQueue.addNewComponentForExecution(configsExecutionMetadata);
         }
+        List<InitializedComponent> initializedComponents = new ArrayList<>();
         while (configsExecutionMetadataExecutionProcessingQueue.hasNextForExecution()) {
             ConfigsExecutionMetadata nextConfigForExecution =
                     configsExecutionMetadataExecutionProcessingQueue.getNextForExecution();
-            prepareContainer(nextConfigForExecution.configClass());
+            prepareContainer(nextConfigForExecution.configClass(), initializedComponents);
         }
+        addComponentsToContainers(initializedComponents);
     }
 
     @Override
@@ -65,6 +68,13 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         ComponentInitializer componentInitializer = new ComponentInitializer(parsedMetadata);
         List<InitializedComponent> initializedComponents = componentInitializer.initializeComponents();
         addComponentsToContainers(initializedComponents);
+    }
+
+    private void prepareContainer(Class<?> initialConfigClass, List<InitializedComponent> initializedComponents) {
+        ConfigParser configParser = new ConfigParser();
+        ParsedMetadata<ComponentExecutionMetadata> parsedMetadata = configParser.parseConfig(initialConfigClass);
+        ComponentInitializer componentInitializer = new ComponentInitializer(parsedMetadata, initializedComponents);
+        List<InitializedComponent> components = componentInitializer.initializeComponents();
     }
 
     private void addComponentsToContainers(List<InitializedComponent> initializedComponents) {

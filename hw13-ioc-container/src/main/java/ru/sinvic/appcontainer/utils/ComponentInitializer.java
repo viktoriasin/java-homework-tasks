@@ -1,20 +1,34 @@
 package ru.sinvic.appcontainer.utils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.*;
 import ru.sinvic.appcontainer.model.ComponentExecutionMetadata;
 import ru.sinvic.appcontainer.model.ExecutionProcessingQueue;
 import ru.sinvic.appcontainer.model.InitializedComponent;
 import ru.sinvic.appcontainer.model.ParsedMetadata;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+
 public class ComponentInitializer {
     private final ExecutionProcessingQueue<ComponentExecutionMetadata> componentProcessingQueue =
             new ExecutionProcessingQueue<>(Comparator.comparing(ComponentExecutionMetadata::componentExecutionOrder));
     private final ParsedMetadata<ComponentExecutionMetadata> parsedMetadata;
-    private final List<InitializedComponent> components = new ArrayList<>();
+    private final List<InitializedComponent> components;
 
     public ComponentInitializer(ParsedMetadata<ComponentExecutionMetadata> parsedMetadata) {
+        this.components = new ArrayList<>();
+        this.parsedMetadata = parsedMetadata;
+        for (ComponentExecutionMetadata componentExecutionMetadata : parsedMetadata) {
+            componentProcessingQueue.addNewComponentForExecution(componentExecutionMetadata);
+        }
+    }
+
+    public ComponentInitializer(
+        ParsedMetadata<ComponentExecutionMetadata> parsedMetadata,
+        List<InitializedComponent> initializedComponents) {
+        this.components = initializedComponents;
         this.parsedMetadata = parsedMetadata;
         for (ComponentExecutionMetadata componentExecutionMetadata : parsedMetadata) {
             componentProcessingQueue.addNewComponentForExecution(componentExecutionMetadata);
