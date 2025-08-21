@@ -6,18 +6,17 @@ import java.util.Set;
 import ru.sinvic.appcontainer.api.AppComponent;
 import ru.sinvic.appcontainer.api.AppComponentsContainerConfig;
 import ru.sinvic.appcontainer.model.ComponentExecutionMetadata;
-import ru.sinvic.appcontainer.model.Metadata;
 import ru.sinvic.appcontainer.model.ParsedMetadata;
 
-public class ConfigParser<T extends Metadata> {
+public class ConfigParser {
 
-    public ParsedMetadata<T> parseConfig(Class<?> configClass) {
+    public ParsedMetadata<ComponentExecutionMetadata> parseConfig(Class<?> configClass) {
         checkConfig(configClass);
-        ParsedMetadata<T> parsedMetadata = new ParsedMetadata<>(configClass);
+        ParsedMetadata<ComponentExecutionMetadata> parsedMetadata = new ParsedMetadata<>(configClass);
         for (Method method : configClass.getDeclaredMethods()) {
             ComponentExecutionMetadata componentExecutionMetadata = parseConfigMethod(method);
             if (componentExecutionMetadata != null) {
-                parsedMetadata.add((T) componentExecutionMetadata);
+                parsedMetadata.add(componentExecutionMetadata);
             }
         }
         return parsedMetadata;

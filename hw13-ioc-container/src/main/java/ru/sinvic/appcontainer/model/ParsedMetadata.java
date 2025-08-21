@@ -12,6 +12,10 @@ public class ParsedMetadata<T extends Metadata> implements Iterable<T> {
         this.configClass = configClass;
     }
 
+    public ParsedMetadata() {
+        this.configClass = null;
+    }
+
     public void add(T metadata) {
         metadataContainer.add(metadata);
     }

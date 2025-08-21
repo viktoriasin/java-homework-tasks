@@ -2,35 +2,35 @@ package ru.sinvic.appcontainer;
 
 import java.util.*;
 import ru.sinvic.appcontainer.api.AppComponentsContainer;
-import ru.sinvic.appcontainer.model.ComponentExecutionMetadata;
-import ru.sinvic.appcontainer.model.ParsedMetadata;
-import ru.sinvic.appcontainer.utils.ComponentExecutor;
+import ru.sinvic.appcontainer.model.*;
+import ru.sinvic.appcontainer.utils.ComponentInitializer;
 import ru.sinvic.appcontainer.utils.ConfigParser;
+import ru.sinvic.appcontainer.utils.ConfigsParser;
 
 @SuppressWarnings("squid:S1068")
 public class AppComponentsContainerImpl implements AppComponentsContainer {
 
-    private final List<Object> appComponents;
-    private final Map<String, Object> appComponentsByName;
+    private final List<Object> appComponents = new ArrayList<>();
+    private final Map<String, Object> appComponentsByName = new HashMap<>();
 
     public AppComponentsContainerImpl(Class<?> initialConfigClass) {
-        ConfigParser<ComponentExecutionMetadata> configParser = new ConfigParser<>();
-        ParsedMetadata<ComponentExecutionMetadata> parsedMetadata = configParser.parseConfig(initialConfigClass);
-        ComponentExecutor componentExecutor = new ComponentExecutor(parsedMetadata);
-        componentExecutor.executeComponents();
-        appComponents = componentExecutor.getComponentsObject();
-        appComponentsByName = componentExecutor.getComponentsByName();
+        prepareContainer(initialConfigClass);
     }
 
-    //    public AppComponentsContainerImpl(Class<?> ... initialConfigClass) {
-    //        for (Class<?> configClass : initialConfigClass) {
-    //            ParsedMetadata parsedConfig = ConfigParser.parseConfig(initialConfigClass);
-    //            ComponentExecutor componentExecutor = new ComponentExecutor(parsedConfig);
-    //            componentExecutor.executeComponents();
-    //            appComponents = componentExecutor.getComponentsObject();
-    //            appComponentsByName = componentExecutor.getComponentsByName();
-    //        }
-    //    }
+    public AppComponentsContainerImpl(Class<?>... initialConfigClass) {
+        ConfigsParser configsParser = new ConfigsParser();
+        ParsedMetadata<ConfigsExecutionMetadata> parsedConfigs = configsParser.parseConfigs(initialConfigClass);
+        ExecutionProcessingQueue<ConfigsExecutionMetadata> configsExecutionMetadataExecutionProcessingQueue =
+                new ExecutionProcessingQueue<>(Comparator.comparing(ConfigsExecutionMetadata::configExecutionOrder));
+        for (ConfigsExecutionMetadata configsExecutionMetadata : parsedConfigs) {
+            configsExecutionMetadataExecutionProcessingQueue.addNewComponentForExecution(configsExecutionMetadata);
+        }
+        while (configsExecutionMetadataExecutionProcessingQueue.hasNextForExecution()) {
+            ConfigsExecutionMetadata nextConfigForExecution =
+                    configsExecutionMetadataExecutionProcessingQueue.getNextForExecution();
+            prepareContainer(nextConfigForExecution.configClass());
+        }
+    }
 
     @Override
     public <C> C getAppComponent(Class<C> componentClass) {
@@ -57,5 +57,20 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
             throw new RuntimeException(String.format("Component %s is not found in container", componentName));
         }
         return c;
+    }
+
+    private void prepareContainer(Class<?> initialConfigClass) {
+        ConfigParser configParser = new ConfigParser();
+        ParsedMetadata<ComponentExecutionMetadata> parsedMetadata = configParser.parseConfig(initialConfigClass);
+        ComponentInitializer componentInitializer = new ComponentInitializer(parsedMetadata);
+        List<InitializedComponent> initializedComponents = componentInitializer.initializeComponents();
+        addComponentsToContainers(initializedComponents);
+    }
+
+    private void addComponentsToContainers(List<InitializedComponent> initializedComponents) {
+        for (InitializedComponent initializedComponent : initializedComponents) {
+            appComponents.add(initializedComponent.componentObject());
+            appComponentsByName.put(initializedComponent.componentName(), initializedComponent.componentObject());
+        }
     }
 }
