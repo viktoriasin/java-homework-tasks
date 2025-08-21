@@ -4,28 +4,28 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 import ru.sinvic.appcontainer.model.ComponentExecutionMetadata;
-import ru.sinvic.appcontainer.model.ComponentProcessingQueue;
-import ru.sinvic.appcontainer.model.ComponentProcessingQueueImpl;
-import ru.sinvic.appcontainer.model.ParsedConfig;
+import ru.sinvic.appcontainer.model.ExecutionProcessingQueue;
+import ru.sinvic.appcontainer.model.ParsedMetadata;
 
 public class ComponentExecutor {
-    private final ComponentProcessingQueue componentProcessingQueue = new ComponentProcessingQueueImpl();
-    private final ParsedConfig parsedConfig;
+    private final ExecutionProcessingQueue<ComponentExecutionMetadata> componentProcessingQueue =
+            new ExecutionProcessingQueue<>(Comparator.comparing(ComponentExecutionMetadata::componentExecutionOrder));
+    private final ParsedMetadata<ComponentExecutionMetadata> parsedMetadata;
     private final List<Object> componentsObject = new ArrayList<>();
     private final Map<String, Object> componentsByName = new HashMap<>();
 
-    public ComponentExecutor(ParsedConfig parsedConfig) {
-        this.parsedConfig = parsedConfig;
-        for (ComponentExecutionMetadata componentExecutionMetadata : parsedConfig) {
+    public ComponentExecutor(ParsedMetadata<ComponentExecutionMetadata> parsedMetadata) {
+        this.parsedMetadata = parsedMetadata;
+        for (ComponentExecutionMetadata componentExecutionMetadata : parsedMetadata) {
             componentProcessingQueue.addNewComponentForExecution(componentExecutionMetadata);
         }
     }
 
     public void executeComponents() {
-        while (componentProcessingQueue.hasNextComponentForExecution()) {
-            ComponentExecutionMetadata component = componentProcessingQueue.getNextComponentForExecution();
+        while (componentProcessingQueue.hasNextForExecution()) {
+            ComponentExecutionMetadata component = componentProcessingQueue.getNextForExecution();
             Method method = component.method();
-            Object configObject = getConfigObject(parsedConfig.getConfigClass());
+            Object configObject = getConfigObject(parsedMetadata.getConfigClass());
             List<Object> parameters = getComponentConstructorParameters(method);
             Object invoked = getComponentObject(method, configObject, parameters);
             componentsObject.add(invoked);
@@ -81,5 +81,9 @@ public class ComponentExecutor {
                 | NoSuchMethodException e) {
             throw new RuntimeException("Error creating config object", e);
         }
+    }
+
+    public ExecutionProcessingQueue<ComponentExecutionMetadata> getComponentProcessingQueue() {
+        return componentProcessingQueue;
     }
 }

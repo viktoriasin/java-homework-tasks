@@ -2,7 +2,8 @@ package ru.sinvic.appcontainer;
 
 import java.util.*;
 import ru.sinvic.appcontainer.api.AppComponentsContainer;
-import ru.sinvic.appcontainer.model.ParsedConfig;
+import ru.sinvic.appcontainer.model.ComponentExecutionMetadata;
+import ru.sinvic.appcontainer.model.ParsedMetadata;
 import ru.sinvic.appcontainer.utils.ComponentExecutor;
 import ru.sinvic.appcontainer.utils.ConfigParser;
 
@@ -13,12 +14,23 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private final Map<String, Object> appComponentsByName;
 
     public AppComponentsContainerImpl(Class<?> initialConfigClass) {
-        ParsedConfig parsedConfig = ConfigParser.parseConfig(initialConfigClass);
-        ComponentExecutor componentExecutor = new ComponentExecutor(parsedConfig);
+        ConfigParser<ComponentExecutionMetadata> configParser = new ConfigParser<>();
+        ParsedMetadata<ComponentExecutionMetadata> parsedMetadata = configParser.parseConfig(initialConfigClass);
+        ComponentExecutor componentExecutor = new ComponentExecutor(parsedMetadata);
         componentExecutor.executeComponents();
         appComponents = componentExecutor.getComponentsObject();
         appComponentsByName = componentExecutor.getComponentsByName();
     }
+
+    //    public AppComponentsContainerImpl(Class<?> ... initialConfigClass) {
+    //        for (Class<?> configClass : initialConfigClass) {
+    //            ParsedMetadata parsedConfig = ConfigParser.parseConfig(initialConfigClass);
+    //            ComponentExecutor componentExecutor = new ComponentExecutor(parsedConfig);
+    //            componentExecutor.executeComponents();
+    //            appComponents = componentExecutor.getComponentsObject();
+    //            appComponentsByName = componentExecutor.getComponentsByName();
+    //        }
+    //    }
 
     @Override
     public <C> C getAppComponent(Class<C> componentClass) {
