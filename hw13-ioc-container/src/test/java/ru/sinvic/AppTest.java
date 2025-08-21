@@ -1,5 +1,12 @@
 package ru.sinvic;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatCode;
+
+import java.io.PrintStream;
+import java.lang.reflect.Modifier;
+import java.util.Arrays;
+import java.util.Scanner;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -9,14 +16,6 @@ import ru.sinvic.appcontainer.api.AppComponent;
 import ru.sinvic.appcontainer.api.AppComponentsContainerConfig;
 import ru.sinvic.config.AppConfig;
 import ru.sinvic.services.*;
-
-import java.io.PrintStream;
-import java.lang.reflect.Modifier;
-import java.util.Arrays;
-import java.util.Scanner;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatCode;
 
 class AppTest {
 
