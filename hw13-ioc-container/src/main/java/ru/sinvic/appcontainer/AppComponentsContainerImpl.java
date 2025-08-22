@@ -1,12 +1,11 @@
 package ru.sinvic.appcontainer;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import ru.sinvic.appcontainer.api.AppComponentsContainer;
-import ru.sinvic.appcontainer.model.*;
-import ru.sinvic.appcontainer.utils.ComponentInitializer;
-import ru.sinvic.appcontainer.utils.ConfigParser;
-import ru.sinvic.appcontainer.utils.ConfigsParser;
-
-import java.util.*;
+import ru.sinvic.appcontainer.model.InitializedComponent;
 
 @SuppressWarnings("squid:S1068")
 public class AppComponentsContainerImpl implements AppComponentsContainer {
@@ -14,25 +13,26 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     private final List<Object> appComponents = new ArrayList<>();
     private final Map<String, Object> appComponentsByName = new HashMap<>();
 
+    private final AppComponentContainerInitializer appComponentContainerInitializer;
+
     public AppComponentsContainerImpl(Class<?> initialConfigClass) {
-        prepareContainer(initialConfigClass);
+        this(new Class<?>[] {initialConfigClass});
     }
 
     public AppComponentsContainerImpl(Class<?>... initialConfigClass) {
-        ConfigsParser configsParser = new ConfigsParser();
-        ParsedMetadata<ConfigsExecutionMetadata> parsedConfigs = configsParser.parseConfigs(initialConfigClass);
-        ExecutionProcessingQueue<ConfigsExecutionMetadata> configsExecutionMetadataExecutionProcessingQueue =
-                new ExecutionProcessingQueue<>(Comparator.comparing(ConfigsExecutionMetadata::configExecutionOrder));
-        for (ConfigsExecutionMetadata configsExecutionMetadata : parsedConfigs) {
-            configsExecutionMetadataExecutionProcessingQueue.addNewComponentForExecution(configsExecutionMetadata);
-        }
-        List<InitializedComponent> initializedComponents = new ArrayList<>();
-        while (configsExecutionMetadataExecutionProcessingQueue.hasNextForExecution()) {
-            ConfigsExecutionMetadata nextConfigForExecution =
-                    configsExecutionMetadataExecutionProcessingQueue.getNextForExecution();
-            prepareContainer(nextConfigForExecution.configClass(), initializedComponents);
-        }
-        addComponentsToContainers(initializedComponents);
+        appComponentContainerInitializer = new AppComponentContainerInitializer(initialConfigClass);
+        initializeContainer();
+    }
+
+    public AppComponentsContainerImpl(String packageName) {
+        appComponentContainerInitializer = new AppComponentContainerInitializer(packageName);
+        initializeContainer();
+    }
+
+    private void initializeContainer() {
+        appComponentContainerInitializer.initializeContainer();
+        List<InitializedComponent> initializedComponents = appComponentContainerInitializer.getInitializedComponent();
+        containerAddAll(initializedComponents);
     }
 
     @Override
@@ -62,22 +62,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         return c;
     }
 
-    private void prepareContainer(Class<?> initialConfigClass) {
-        ConfigParser configParser = new ConfigParser();
-        ParsedMetadata<ComponentExecutionMetadata> parsedMetadata = configParser.parseConfig(initialConfigClass);
-        ComponentInitializer componentInitializer = new ComponentInitializer(parsedMetadata);
-        List<InitializedComponent> initializedComponents = componentInitializer.initializeComponents();
-        addComponentsToContainers(initializedComponents);
-    }
-
-    private void prepareContainer(Class<?> initialConfigClass, List<InitializedComponent> initializedComponents) {
-        ConfigParser configParser = new ConfigParser();
-        ParsedMetadata<ComponentExecutionMetadata> parsedMetadata = configParser.parseConfig(initialConfigClass);
-        ComponentInitializer componentInitializer = new ComponentInitializer(parsedMetadata, initializedComponents);
-        List<InitializedComponent> components = componentInitializer.initializeComponents();
-    }
-
-    private void addComponentsToContainers(List<InitializedComponent> initializedComponents) {
+    private void containerAddAll(List<InitializedComponent> initializedComponents) {
         for (InitializedComponent initializedComponent : initializedComponents) {
             appComponents.add(initializedComponent.componentObject());
             appComponentsByName.put(initializedComponent.componentName(), initializedComponent.componentObject());

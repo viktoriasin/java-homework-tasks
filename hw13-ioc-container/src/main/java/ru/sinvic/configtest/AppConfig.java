@@ -1,11 +1,22 @@
-package ru.sinvic.config;
+package ru.sinvic.configtest;
 
 import ru.sinvic.appcontainer.api.AppComponent;
 import ru.sinvic.appcontainer.api.AppComponentsContainerConfig;
 import ru.sinvic.services.*;
 
-@AppComponentsContainerConfig(order = 2)
-public class AppConfig2 {
+@AppComponentsContainerConfig(order = 1)
+public class AppConfig {
+
+    @AppComponent(order = 0, name = "equationPreparer")
+    public EquationPreparer equationPreparer() {
+        return new EquationPreparerImpl();
+    }
+
+    @SuppressWarnings("squid:S106")
+    @AppComponent(order = 0, name = "ioService")
+    public IOService ioService() {
+        return new IOServiceStreams(System.out, System.in);
+    }
 
     @AppComponent(order = 1, name = "playerService")
     public PlayerService playerService(IOService ioService) {

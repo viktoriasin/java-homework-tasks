@@ -5,23 +5,10 @@ import java.util.Iterator;
 import java.util.List;
 
 public class ParsedMetadata<T extends Metadata> implements Iterable<T> {
-    private final Class<?> configClass;
     List<T> metadataContainer = new ArrayList<>();
-
-    public ParsedMetadata(Class<?> configClass) {
-        this.configClass = configClass;
-    }
-
-    public ParsedMetadata() {
-        this.configClass = null;
-    }
 
     public void add(T metadata) {
         metadataContainer.add(metadata);
-    }
-
-    public Class<?> getConfigClass() {
-        return configClass;
     }
 
     @Override

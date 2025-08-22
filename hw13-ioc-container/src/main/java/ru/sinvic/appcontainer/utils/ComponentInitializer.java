@@ -1,37 +1,25 @@
 package ru.sinvic.appcontainer.utils;
 
-import ru.sinvic.appcontainer.model.ComponentExecutionMetadata;
-import ru.sinvic.appcontainer.model.ExecutionProcessingQueue;
-import ru.sinvic.appcontainer.model.InitializedComponent;
-import ru.sinvic.appcontainer.model.ParsedMetadata;
-
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
+import ru.sinvic.appcontainer.model.ComponentExecutionMetadata;
+import ru.sinvic.appcontainer.model.ExecutionProcessingQueue;
+import ru.sinvic.appcontainer.model.InitializedComponent;
+import ru.sinvic.appcontainer.model.ParsedMetadata;
 
 public class ComponentInitializer {
     private final ExecutionProcessingQueue<ComponentExecutionMetadata> componentProcessingQueue =
             new ExecutionProcessingQueue<>(Comparator.comparing(ComponentExecutionMetadata::componentExecutionOrder));
-    private final ParsedMetadata<ComponentExecutionMetadata> parsedMetadata;
-    private final List<InitializedComponent> components;
+    private final List<InitializedComponent> components = new ArrayList<>();
 
-    public ComponentInitializer(ParsedMetadata<ComponentExecutionMetadata> parsedMetadata) {
-        this.components = new ArrayList<>();
-        this.parsedMetadata = parsedMetadata;
-        for (ComponentExecutionMetadata componentExecutionMetadata : parsedMetadata) {
-            componentProcessingQueue.addNewComponentForExecution(componentExecutionMetadata);
-        }
-    }
-
-    public ComponentInitializer(
-        ParsedMetadata<ComponentExecutionMetadata> parsedMetadata,
-        List<InitializedComponent> initializedComponents) {
-        this.components = initializedComponents;
-        this.parsedMetadata = parsedMetadata;
-        for (ComponentExecutionMetadata componentExecutionMetadata : parsedMetadata) {
-            componentProcessingQueue.addNewComponentForExecution(componentExecutionMetadata);
+    public ComponentInitializer(List<ParsedMetadata<ComponentExecutionMetadata>> parsedMetadatasList) {
+        for (ParsedMetadata<ComponentExecutionMetadata> metadata : parsedMetadatasList) {
+            for (ComponentExecutionMetadata componentExecutionMetadata : metadata) {
+                componentProcessingQueue.addNewComponentForExecution(componentExecutionMetadata);
+            }
         }
     }
 
@@ -39,7 +27,7 @@ public class ComponentInitializer {
         while (componentProcessingQueue.hasNextForExecution()) {
             ComponentExecutionMetadata component = componentProcessingQueue.getNextForExecution();
             Method method = component.method();
-            Object configObject = getConfigObject(parsedMetadata.getConfigClass());
+            Object configObject = component.configObject();
             List<Object> parameters = getComponentConstructorParameters(method);
             Object compoentnObject = getComponentObject(method, configObject, parameters);
             components.add(new InitializedComponent(component.componentName(), compoentnObject));
@@ -75,20 +63,5 @@ public class ComponentInitializer {
                             method.getName(), parameters),
                     e);
         }
-    }
-
-    private static Object getConfigObject(Class<?> configClass) {
-        try {
-            return configClass.getConstructor().newInstance();
-        } catch (InstantiationException
-                | IllegalAccessException
-                | InvocationTargetException
-                | NoSuchMethodException e) {
-            throw new RuntimeException("Error creating config object", e);
-        }
-    }
-
-    public ExecutionProcessingQueue<ComponentExecutionMetadata> getComponentProcessingQueue() {
-        return componentProcessingQueue;
     }
 }
