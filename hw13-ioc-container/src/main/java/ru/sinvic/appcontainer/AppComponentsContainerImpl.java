@@ -40,6 +40,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
         C componentForReturn = null;
         for (Object component : appComponents) {
             if (componentClass.isAssignableFrom(component.getClass())) {
+                // TODO: убрать 4 уровня вложенности через использование списка
                 if (componentForReturn != null) {
                     throw new RuntimeException(String.format(
                             "Two component with the same type in container are prohibited! Type: %s", componentClass));
@@ -63,7 +64,7 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     private void containerAddAll(List<InitializedComponent> initializedComponents) {
-        for (InitializedComponent initializedComponent : initializedComponents) {
+        for (InitializedComponent initializedComponent : initializedComponents) { // TODO: добавить какой-то инфраструктурный класс, который возьмет на себя хранение и поиск компонентов, например, ComponentRegistry
             appComponents.add(initializedComponent.componentObject());
             appComponentsByName.put(initializedComponent.componentName(), initializedComponent.componentObject());
         }

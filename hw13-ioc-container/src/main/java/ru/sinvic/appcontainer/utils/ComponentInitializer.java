@@ -39,7 +39,7 @@ public class ComponentInitializer {
         Class<?>[] parameterTypes = method.getParameterTypes();
         List<Object> parameters = new ArrayList<>();
         for (Class<?> parameterCLass : parameterTypes) {
-            for (InitializedComponent component : components) {
+            for (InitializedComponent component : components) { // TODO: добавить какой-то инфраструктурный класс, который возьмет на себя хранение и поиск компонентов, например, ComponentRegistry
                 Object componentObject = component.componentObject();
                 if (parameterCLass.isAssignableFrom(componentObject.getClass())) {
                     parameters.add(componentObject);

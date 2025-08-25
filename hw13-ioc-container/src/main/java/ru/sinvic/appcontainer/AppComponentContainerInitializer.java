@@ -1,13 +1,12 @@
 package ru.sinvic.appcontainer;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 import ru.sinvic.appcontainer.model.*;
 import ru.sinvic.appcontainer.utils.ComponentInitializer;
 import ru.sinvic.appcontainer.utils.ConfigParser;
 import ru.sinvic.appcontainer.utils.ConfigsParser;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
 
 public class AppComponentContainerInitializer {
     private final ParsedMetadata<ConfigsExecutionMetadata> parsedConfigs;
@@ -23,7 +22,7 @@ public class AppComponentContainerInitializer {
 
     public void initializeContainer() {
         ExecutionProcessingQueue<ConfigsExecutionMetadata> configsExecutionProcessingQueue =
-            getConfigsExecutionQueue(parsedConfigs);
+                getConfigsExecutionQueue(parsedConfigs);
         processConfigsQueue(configsExecutionProcessingQueue);
     }
 
@@ -32,9 +31,9 @@ public class AppComponentContainerInitializer {
     }
 
     private static ExecutionProcessingQueue<ConfigsExecutionMetadata> getConfigsExecutionQueue(
-        ParsedMetadata<ConfigsExecutionMetadata> parsedConfigs) {
+            ParsedMetadata<ConfigsExecutionMetadata> parsedConfigs) {
         ExecutionProcessingQueue<ConfigsExecutionMetadata> configsExecutionProcessingQueue =
-            new ExecutionProcessingQueue<>(Comparator.comparing(ConfigsExecutionMetadata::configExecutionOrder));
+                new ExecutionProcessingQueue<>(Comparator.comparing(ConfigsExecutionMetadata::configExecutionOrder));
         for (ConfigsExecutionMetadata configsExecutionMetadata : parsedConfigs) {
             configsExecutionProcessingQueue.addNewComponentForExecution(configsExecutionMetadata);
         }
@@ -42,19 +41,19 @@ public class AppComponentContainerInitializer {
     }
 
     private void processConfigsQueue(
-        ExecutionProcessingQueue<ConfigsExecutionMetadata> configsExecutionProcessingQueue) {
+            ExecutionProcessingQueue<ConfigsExecutionMetadata> configsExecutionProcessingQueue) {
         List<ParsedMetadata<ComponentExecutionMetadata>> componentsMetadata = new ArrayList<>();
         while (configsExecutionProcessingQueue.hasNextForExecution()) {
             ConfigsExecutionMetadata nextConfigForExecution = configsExecutionProcessingQueue.getNextForExecution();
             ParsedMetadata<ComponentExecutionMetadata> parsedComponentMetadata = ConfigParser.parseConfig(
-                nextConfigForExecution.configClass(), nextConfigForExecution.configExecutionOrder());
+                    nextConfigForExecution.configClass(), nextConfigForExecution.configExecutionOrder());
             componentsMetadata.add(parsedComponentMetadata);
         }
         initializedComponents.addAll(initializeComponents(componentsMetadata));
     }
 
     private List<InitializedComponent> initializeComponents(
-        List<ParsedMetadata<ComponentExecutionMetadata>> parsedMetadata) {
+            List<ParsedMetadata<ComponentExecutionMetadata>> parsedMetadata) {
         ComponentInitializer componentInitializer = new ComponentInitializer(parsedMetadata);
         List<InitializedComponent> initializedComponents = componentInitializer.initializeComponents();
         return initializedComponents;
