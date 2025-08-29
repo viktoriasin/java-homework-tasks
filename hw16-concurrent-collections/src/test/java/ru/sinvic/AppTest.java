@@ -1,5 +1,16 @@
 package ru.sinvic;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.random.RandomGenerator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.RepeatedTest;
 import org.mockito.ArgumentCaptor;
@@ -10,18 +21,6 @@ import ru.sinvic.services.SensorsDataQueueChannel;
 import ru.sinvic.services.SensorsDataServerImpl;
 import ru.sinvic.services.processors.SensorDataProcessorCommon;
 import ru.sinvic.services.processors.SensorDataProcessorRoom;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.random.RandomGenerator;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 
 class AppTest {
     private static final String ALL_ROOMS_BINDING = "*";

@@ -1,8 +1,7 @@
 package ru.sinvic.api;
 
-import ru.sinvic.api.model.SensorData;
-
 import java.util.concurrent.TimeUnit;
+import ru.sinvic.api.model.SensorData;
 
 public interface SensorsDataChannel {
     boolean push(SensorData sensorData);

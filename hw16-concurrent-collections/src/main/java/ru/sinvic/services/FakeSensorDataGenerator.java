@@ -1,16 +1,15 @@
 package ru.sinvic.services;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import ru.sinvic.api.SensorsDataServer;
-import ru.sinvic.api.model.SensorData;
-
 import java.time.LocalDateTime;
 import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.random.RandomGenerator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import ru.sinvic.api.SensorsDataServer;
+import ru.sinvic.api.model.SensorData;
 
 @SuppressWarnings("java:S2245")
 public class FakeSensorDataGenerator {
