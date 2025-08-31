@@ -6,7 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sinvic.core.repository.DataTemplate;
 import ru.sinvic.core.sessionmanager.TransactionRunner;
-import ru.sinvic.crm.model.Manager;
+import ru.sinvic.crm.domain.Manager;
 
 public class DbServiceManagerImpl implements DBServiceManager {
     private static final Logger log = LoggerFactory.getLogger(DbServiceManagerImpl.class);

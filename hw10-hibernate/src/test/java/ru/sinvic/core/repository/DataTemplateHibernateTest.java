@@ -7,9 +7,9 @@ import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.sinvic.base.AbstractHibernateTest;
-import ru.sinvic.crm.model.Address;
-import ru.sinvic.crm.model.Client;
-import ru.sinvic.crm.model.Phone;
+import ru.sinvic.crm.domain.Address;
+import ru.sinvic.crm.domain.Client;
+import ru.sinvic.crm.domain.Phone;
 
 @SuppressWarnings("java:S125")
 class DataTemplateHibernateTest extends AbstractHibernateTest {

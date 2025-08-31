@@ -13,9 +13,9 @@ import ru.sinvic.core.repository.DataTemplateHibernate;
 import ru.sinvic.core.repository.HibernateUtils;
 import ru.sinvic.core.sessionmanager.TransactionManagerHibernate;
 import ru.sinvic.crm.dbmigrations.MigrationsExecutorFlyway;
-import ru.sinvic.crm.model.Address;
-import ru.sinvic.crm.model.Client;
-import ru.sinvic.crm.model.Phone;
+import ru.sinvic.crm.domain.Address;
+import ru.sinvic.crm.domain.Client;
+import ru.sinvic.crm.domain.Phone;
 import ru.sinvic.crm.service.DBServiceClient;
 import ru.sinvic.crm.service.DbServiceClientImpl;
 

@@ -12,7 +12,7 @@ import ru.sinvic.cachehw.MyCache;
 import ru.sinvic.core.repository.executor.DbExecutorImpl;
 import ru.sinvic.core.sessionmanager.TransactionRunnerJdbc;
 import ru.sinvic.crm.datasource.DriverManagerDataSource;
-import ru.sinvic.crm.model.Client;
+import ru.sinvic.crm.domain.Client;
 import ru.sinvic.crm.service.DbServiceClientImpl;
 import ru.sinvic.jdbc.mapper.DataTemplateJdbc;
 import ru.sinvic.jdbc.mapper.EntityClassMetaData;

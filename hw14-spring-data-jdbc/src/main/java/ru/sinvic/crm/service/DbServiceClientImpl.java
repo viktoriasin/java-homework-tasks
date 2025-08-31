@@ -1,43 +1,40 @@
 package ru.sinvic.crm.service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.sinvic.core.repository.DataTemplate;
-import ru.sinvic.core.sessionmanager.TransactionManager;
-import ru.sinvic.crm.model.Client;
+import org.springframework.stereotype.Service;
+import ru.sinvic.crm.domain.Client;
+import ru.sinvic.crm.repository.ClientRepository;
+import ru.sinvic.sessionmanager.TransactionManager;
 
+@Service
 public class DbServiceClientImpl implements DBServiceClient {
     private static final Logger log = LoggerFactory.getLogger(DbServiceClientImpl.class);
 
-    private final DataTemplate<Client> clientDataTemplate;
     private final TransactionManager transactionManager;
+    private final ClientRepository clientRepository;
 
-    public DbServiceClientImpl(TransactionManager transactionManager, DataTemplate<Client> clientDataTemplate) {
+    public DbServiceClientImpl(TransactionManager transactionManager, ClientRepository clientRepository) {
         this.transactionManager = transactionManager;
-        this.clientDataTemplate = clientDataTemplate;
+        this.clientRepository = clientRepository;
     }
 
     @Override
     public Client saveClient(Client client) {
-        return transactionManager.doInTransaction(session -> {
-            var clientCloned = client.clone();
-            if (client.getId() == null) {
-                var savedClient = clientDataTemplate.insert(session, clientCloned);
-                log.info("created client: {}", clientCloned);
-                return savedClient;
-            }
-            var savedClient = clientDataTemplate.update(session, clientCloned);
-            log.info("updated client: {}", savedClient);
+        return transactionManager.doInTransaction(() -> {
+            var savedClient = clientRepository.save(client);
+            log.info("saved client: {}", savedClient);
             return savedClient;
         });
     }
 
     @Override
     public Optional<Client> getClient(long id) {
-        return transactionManager.doInReadOnlyTransaction(session -> {
-            var clientOptional = clientDataTemplate.findById(session, id);
+        return transactionManager.doInReadOnlyTransaction(() -> {
+            var clientOptional = clientRepository.findById(id);
             log.info("client: {}", clientOptional);
             return clientOptional;
         });
@@ -45,8 +42,9 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     @Override
     public List<Client> findAll() {
-        return transactionManager.doInReadOnlyTransaction(session -> {
-            var clientList = clientDataTemplate.findAll(session);
+        return transactionManager.doInReadOnlyTransaction(() -> {
+            var clientList = new ArrayList<Client>();
+            clientRepository.findAll().forEach(clientList::add);
             log.info("clientList:{}", clientList);
             return clientList;
         });

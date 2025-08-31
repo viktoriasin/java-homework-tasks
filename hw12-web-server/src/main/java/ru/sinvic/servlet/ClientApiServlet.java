@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.BufferedReader;
 import java.io.IOException;
 import ru.sinvic.core.sessionmanager.DataBaseOperationException;
-import ru.sinvic.crm.model.Client;
+import ru.sinvic.crm.domain.Client;
 import ru.sinvic.crm.service.DBServiceClient;
 
 public class ClientApiServlet extends HttpServlet {
