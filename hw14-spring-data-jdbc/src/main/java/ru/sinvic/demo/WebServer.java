@@ -15,7 +15,6 @@ import ru.sinvic.crm.dbmigrations.MigrationsExecutorFlyway;
 import ru.sinvic.crm.model.Address;
 import ru.sinvic.crm.model.Client;
 import ru.sinvic.crm.model.Phone;
-import ru.sinvic.crm.service.AdminAuthService;
 import ru.sinvic.crm.service.DbServiceClientImpl;
 import ru.sinvic.helpers.FileSystemHelper;
 import ru.sinvic.server.ClientWebServer;
@@ -51,11 +50,8 @@ public class WebServer {
                 .create();
 
         var properties = getPropertiesFile();
-        var username = properties.getProperty("admin.username");
-        var password = properties.getProperty("admin.password");
-        var authService = new AdminAuthService(username, password);
 
-        ClientWebServer clientWebServer = new ClientWebServerImpl(WEB_SERVER_PORT, dbServiceClient, gson, authService);
+        ClientWebServer clientWebServer = new ClientWebServerImpl(WEB_SERVER_PORT, dbServiceClient, gson);
 
         clientWebServer.start();
         clientWebServer.join();
