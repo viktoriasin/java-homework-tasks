@@ -27,6 +27,7 @@ create table address
 
 create table phone
 (
+    id  bigserial not null primary key,
     client_id   bigint not null references client (id),
     number varchar(50)
 );

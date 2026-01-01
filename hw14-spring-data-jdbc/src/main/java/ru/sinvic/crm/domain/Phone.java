@@ -1,6 +1,8 @@
 package ru.sinvic.crm.domain;
 
+import org.springframework.data.annotation.Id;
+import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
 @Table("phone")
-public record Phone(Long clientId, String number) {}
+public record Phone(@Id @Column("id") Long id, String number, Long clientId) {}

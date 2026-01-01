@@ -3,30 +3,41 @@ package ru.sinvic.crm.service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import ru.sinvic.crm.domain.Address;
 import ru.sinvic.crm.domain.Client;
+import ru.sinvic.crm.domain.Phone;
+import ru.sinvic.crm.repository.AddressRepository;
 import ru.sinvic.crm.repository.ClientRepository;
+import ru.sinvic.crm.repository.PhoneRepository;
 import ru.sinvic.sessionmanager.TransactionManager;
 
 @Service
+@RequiredArgsConstructor
 public class DbServiceClientImpl implements DBServiceClient {
     private static final Logger log = LoggerFactory.getLogger(DbServiceClientImpl.class);
 
     private final TransactionManager transactionManager;
     private final ClientRepository clientRepository;
+    private final PhoneRepository phoneRepository;
+    private final AddressRepository addressRepository;
 
-    public DbServiceClientImpl(TransactionManager transactionManager, ClientRepository clientRepository) {
-        this.transactionManager = transactionManager;
-        this.clientRepository = clientRepository;
-    }
-
-    @Override
-    public Client saveClient(Client client) {
+    public Client saveClientWithProfileInfo(String clientName, String street, String phoneNumber) {
         return transactionManager.doInTransaction(() -> {
+            Client client = new Client(null, clientName);
             var savedClient = clientRepository.save(client);
             log.info("saved client: {}", savedClient);
+
+            Long newClientId = savedClient.id();
+            Address savedAddress = addressRepository.save(new Address(null, street, newClientId));
+            log.info("saved clients address: {}", savedAddress);
+
+            Phone savedPhone = phoneRepository.save(new Phone(null, phoneNumber, newClientId));
+            log.info("saved clients phone: {}", savedPhone);
+
             return savedClient;
         });
     }

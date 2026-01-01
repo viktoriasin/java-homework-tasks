@@ -8,7 +8,7 @@
         function saveClient() {
             const clientName = document.getElementById('clientNameTextBox').value.trim();
             const street = document.getElementById('clientAddressTextBox').value.trim();
-            const phoneNumber = document.getElementById('clientPhoneTextBox').value.trim();
+            const phone = document.getElementById('clientPhoneTextBox').value.trim();
 
             // Валидация обязательных полей
             if (!clientName) {
@@ -21,15 +21,15 @@
                 return;
             }
 
-            if (!phoneNumber) {
+            if (!phone) {
                 alert('Телефон обязателен!');
                 return;
             }
 
             const clientData = {
                 name: clientName,
-                address: { street: street },  // Один объект адреса
-                phone: { number: phoneNumber } // Один объект телефона
+                street: street,
+                phoneNumber: phone
             };
 
             fetch('/api/client', {
