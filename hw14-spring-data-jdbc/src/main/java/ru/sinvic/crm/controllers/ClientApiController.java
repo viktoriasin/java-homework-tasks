@@ -1,5 +1,6 @@
 package ru.sinvic.crm.controllers;
 
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
@@ -12,15 +13,12 @@ import ru.sinvic.crm.service.DBServiceClient;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 public class ClientApiController {
 
     private static final Logger log = LoggerFactory.getLogger(ClientApiController.class);
 
     private final DBServiceClient dbServiceClient;
-
-    public ClientApiController(DBServiceClient dbServiceClient) {
-        this.dbServiceClient = dbServiceClient;
-    }
 
     @GetMapping({"/api/client/{id}"})
     protected ClientCreateDto getClientById(@PathVariable(name = "id") long id) {
@@ -34,7 +32,7 @@ public class ClientApiController {
 
     @PostMapping("/api/client")
     protected Client clientSave(@RequestBody ClientCreateDto clientCreateDto) {
-        log.info("Received POST request to create/update clientFromPostRequest " + clientCreateDto);
+        log.info("Received POST request to create/update clientFromPostRequest {}", clientCreateDto);
         return dbServiceClient.saveClientWithProfileInfo(
                 clientCreateDto.getName(), clientCreateDto.getStreet(), clientCreateDto.getPhoneNumber());
     }

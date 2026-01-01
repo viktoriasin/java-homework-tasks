@@ -15,8 +15,6 @@ public interface DBServiceClient {
 
     Address getClientAddress(long clientId);
 
-    List<Client> findAll();
-
     List<ClientCreateDto> findAllWithProfileInfo();
 
     Client saveClientWithProfileInfo(String name, String street, String phoneNumber);

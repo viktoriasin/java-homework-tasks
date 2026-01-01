@@ -13,7 +13,6 @@ import ru.sinvic.crm.repository.ClientRepository;
 import ru.sinvic.crm.repository.PhoneRepository;
 import ru.sinvic.sessionmanager.TransactionManager;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -66,15 +65,6 @@ public class DbServiceClientImpl implements DBServiceClient {
     }
 
     @Override
-    public List<Client> findAll() {
-        return transactionManager.doInReadOnlyTransaction(() -> {
-            var clientList = new ArrayList<>(clientRepository.findAll());
-            log.info("clientList:{}", clientList);
-            return clientList;
-        });
-    }
-
-    @Override
     public List<ClientCreateDto> findAllWithProfileInfo() {
         return transactionManager.doInReadOnlyTransaction(() -> {
             List<Client> clients = clientRepository.findAll();
@@ -92,11 +82,11 @@ public class DbServiceClientImpl implements DBServiceClient {
 
     private String findStreetByClientId(Long clientId) {
         Optional<Address> address = addressRepository.findByClientId(clientId);
-        return address.map(Address::street).orElse(null);
+        return address.map(Address::street).orElseThrow(() -> new RuntimeException("Address not found!"));
     }
 
     private String findPhoneNumberByClientId(Long clientId) {
         Optional<Phone> phone = phoneRepository.findByClientId(clientId);
-        return phone.map(Phone::number).orElse(null);
+        return phone.map(Phone::number).orElseThrow(() -> new RuntimeException("Phone not found!"));
     }
 }
