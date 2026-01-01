@@ -43,8 +43,7 @@ public class DbServiceClientImpl implements DBServiceClient {
     @Override
     public List<Client> findAll() {
         return transactionManager.doInReadOnlyTransaction(() -> {
-            var clientList = new ArrayList<Client>();
-            clientRepository.findAll().forEach(clientList::add);
+            var clientList = new ArrayList<>(clientRepository.findAll());
             log.info("clientList:{}", clientList);
             return clientList;
         });

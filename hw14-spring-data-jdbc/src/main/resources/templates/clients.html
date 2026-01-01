@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="ru" xmlns:th="http://www.thymeleaf.org">
 <head>
@@ -5,14 +6,30 @@
     <title>Клиенты</title>
     <script>
         function saveClient() {
-            const clientNameTextBox = document.getElementById('clientNameTextBox').value.trim();
-            const clientAddressTextBox = document.getElementById('clientAddressTextBox').value.trim();
-            const clientPhoneTextBox = document.getElementById('clientPhoneTextBox').value.trim();
+            const clientName = document.getElementById('clientNameTextBox').value.trim();
+            const street = document.getElementById('clientAddressTextBox').value.trim();
+            const phoneNumber = document.getElementById('clientPhoneTextBox').value.trim();
+
+            // Валидация обязательных полей
+            if (!clientName) {
+                alert('Имя клиента обязательно!');
+                return;
+            }
+
+            if (!street) {
+                alert('Адрес обязателен!');
+                return;
+            }
+
+            if (!phoneNumber) {
+                alert('Телефон обязателен!');
+                return;
+            }
 
             const clientData = {
-                name: clientNameTextBox,
-                address: {street: clientAddressTextBox},
-                phones: [{number: clientPhoneTextBox}]
+                name: clientName,
+                address: { street: street },  // Один объект адреса
+                phone: { number: phoneNumber } // Один объект телефона
             };
 
             fetch('/api/client', {
@@ -29,7 +46,14 @@
                 return response.json();
             })
             .then(savedClient => {
-                alert('Клиент успешно сохранен!');
+                alert('Клиент успешно сохранён!');
+                // Очищаем поля
+                document.getElementById('clientNameTextBox').value = '';
+                document.getElementById('clientAddressTextBox').value = '';
+                document.getElementById('clientPhoneTextBox').value = '';
+                // Показываем ID
+                const container = document.getElementById('clientSavedDataContainer');
+                container.textContent = `ID клиента: ${savedClient.id}`;
             })
             .catch(error => {
                 console.error('Ошибка:', error.message);
@@ -38,81 +62,135 @@
         }
 
         function getClientById() {
-            const clientIdTextBox = document.getElementById('clientIdTextBox').value.trim();
-            const clientDataContainer = document.getElementById('clientDataContainer');
-            fetch(`/api/client/${clientIdTextBox}`)
-                .then(response => response.json())
-                .then(user => clientDataContainer.innerHTML = JSON.stringify(user))
+            const clientId = document.getElementById('clientIdTextBox').value.trim();
+            const container = document.getElementById('clientDataContainer');
+
+            if (!clientId) {
+                alert('Введите ID клиента!');
+                return;
+            }
+
+            fetch(`/api/client/${clientId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Клиент не найден.');
+                    }
+                    return response.json();
+                })
+                .then(client => {
+                    let html = `<strong>Имя:</strong> ${client.name}<br>`;
+
+                    // Один адрес
+                    if (client.address && client.address.street) {
+                        html += `<strong>Адрес:</strong> ${client.address.street}<br>`;
+                    } else {
+                        html += `<strong>Адрес:</strong> не указан<br>`;
+                    }
+
+                    // Один телефон
+                    if (client.phone && client.phone.number) {
+                        html += `<strong>Телефон:</strong> ${client.phone.number}<br>`;
+                    } else {
+                        html += `<strong>Телефон:</strong> не указан<br>`;
+                    }
+
+                    container.innerHTML = html;
+                })
                 .catch(error => {
                     console.error('Ошибка:', error.message);
-                    alert('Возникла ошибка при получении данных о клиенте.');
+                    alert('Клиент с таким ID не найден.');
+                    container.textContent = '';
                 });
         }
 
         function getClients() {
-            const clientsDataContainer = document.getElementById('clientsDataContainer');
-            fetch(`/api/clients`)
+            const container = document.getElementById('clientsDataContainer');
+            fetch('/api/clients')
                 .then(response => response.json())
-                .then(user => clientsDataContainer.innerHTML = JSON.stringify(user))
+                .then(clients => {
+                    if (clients.length === 0) {
+                        container.textContent = 'Клиенты не найдены.';
+                        return;
+                    }
+
+                    let html = '<ul style="list-style-type: none; padding: 0;">';
+                    clients.forEach(client => {
+                        html += `
+                            <li style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                                <strong>ID:</strong> ${client.id}<br>
+                                <strong>Имя:</strong> ${client.name}<br>
+                                ${client.address?.street
+                    ? `<strong>Адрес:</strong> ${client.address.street}`
+                    : '<strong>Адрес:</strong> нет данных'}<br>
+                ${client.phone?.number
+                    ? `<strong>Телефон:</strong> ${client.phone.number}`
+                    : '<strong>Телефон:</strong> нет данных'}
+                </li>`;
+                    });
+                    html += '</ul>';
+                    container.innerHTML = html;
+                })
                 .catch(error => {
                     console.error('Ошибка:', error.message);
-                    alert('Возникла ошибка при получении списка клиентов.');
+                    alert('Ошибка при получении списка клиентов.');
+                    container.textContent = '';
                 });
         }
     </script>
 
     <style>
-        /* Основной стиль для всей формы */
         .form-container {
-            width: 400px; /* Ширина формы */
-            margin: 0 auto; /* Центруем форму по центру экрана */
-            padding: 20px; /* Внутренний отступ вокруг формы */
-            border-radius: 8px; /* Округлые углы */
-            background-color: #f9f9f9; /* Фон формы */
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Мягкая тень */
+            width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
 
-        /* Оформление полей ввода */
         label {
-            display: block; /* Каждый лейбл начинается с новой строки */
-            font-weight: bold; /* Жирный шрифт для подписей */
-            color: #333; /* Цвет подписи */
-            margin-bottom: 5px; /* Небольшой отступ снизу */
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
         }
 
         input[type="text"] {
-            width: 100%; /* Поля занимают всю ширину родителя */
-            height: 35px; /* Высота полей */
-            padding: 10px; /* Внутренние отступы */
-            border: 1px solid #ccc; /* Тонкая рамка */
-            border-radius: 4px; /* Округлая граница */
-            margin-bottom: 15px; /* Расстояние между полями */
+            width: 100%;
+            height: 35px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 15px;
         }
 
         button {
             width: 100%;
             height: 40px;
-            background-color: #007bff; /* Голубой фон кнопки */
-            color: white; /* Белый текст */
-            border: none; /* Без границ */
-            cursor: pointer; /* Курсор меняется на руку */
-            border-radius: 4px; /* Округлость углов */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
         }
 
         button:hover {
-            background-color: #0056b3; /* Более тёмный оттенок фона при наведении */
+            background-color: #0056b3;
         }
 
-        pre {
-            text-align: center; /* Центрирование текста */
-            color: green; /* Зелёный цвет для успеха */
-            font-size: 16px; /* Увеличенный размер шрифта */
-            margin-top: 20px; /* Отступ сверху */
+        pre, #clientDataContainer, #clientsDataContainer {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow-x: auto;
         }
+
         .container {
-            display: flex; /* Flexbox для горизонтального размещения */
-            justify-content: space-between; /* Равномерное распределение */
-            gap: 20px; /* Интервал между формами */
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
         }
     </style>
 </head>
@@ -137,14 +215,14 @@
     </div>
 
     <div class="form-container">
-        <h4>Получить данные о клиенте по id</h4>
+        <h4>Получить данные о клиенте по ID</h4>
 
-        <label>Введите id клиента:</label>
-        <input id="clientIdTextBox" placeholder="Введите id клиента" type="text" value="3">
+        <label>Введите ID клиента:</label>
+        <input id="clientIdTextBox" placeholder="Введите ID клиента" type="text">
 
         <button onclick="getClientById()">Получить</button>
 
-        <pre id="clientDataContainer"></pre>
+        <div id="clientDataContainer"></div>
     </div>
 </div>
 
@@ -153,8 +231,7 @@
 
     <button onclick="getClients()">Получить</button>
 
-    <pre id="clientsDataContainer"></pre>
+    <div id="clientsDataContainer"></div>
 </div>
-
 </body>
 </html>
