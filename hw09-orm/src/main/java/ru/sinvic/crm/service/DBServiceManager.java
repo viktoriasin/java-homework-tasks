@@ -2,7 +2,7 @@ package ru.sinvic.crm.service;
 
 import java.util.List;
 import java.util.Optional;
-import ru.sinvic.crm.model.Manager;
+import ru.sinvic.crm.domain.Manager;
 
 public interface DBServiceManager {
 

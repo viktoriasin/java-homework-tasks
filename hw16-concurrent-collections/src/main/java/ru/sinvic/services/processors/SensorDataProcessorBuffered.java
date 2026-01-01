@@ -1,15 +1,14 @@
 package ru.sinvic.services.processors;
 
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import ru.sinvic.api.SensorDataProcessor;
 import ru.sinvic.api.model.SensorData;
 import ru.sinvic.lib.SensorDataBufferedWriter;
-
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.concurrent.ArrayBlockingQueue;
 
 // Этот класс нужно реализовать
 @SuppressWarnings({"java:S1068", "java:S125"})

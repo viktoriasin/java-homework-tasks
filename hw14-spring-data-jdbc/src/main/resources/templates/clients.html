@@ -1,0 +1,237 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8">
+    <title>Клиенты</title>
+    <script>
+        function saveClient() {
+            const clientName = document.getElementById('clientNameTextBox').value.trim();
+            const street = document.getElementById('clientAddressTextBox').value.trim();
+            const phone = document.getElementById('clientPhoneTextBox').value.trim();
+
+            // Валидация обязательных полей
+            if (!clientName) {
+                alert('Имя клиента обязательно!');
+                return;
+            }
+
+            if (!street) {
+                alert('Адрес обязателен!');
+                return;
+            }
+
+            if (!phone) {
+                alert('Телефон обязателен!');
+                return;
+            }
+
+            const clientData = {
+                name: clientName,
+                street: street,
+                phoneNumber: phone
+            };
+
+            fetch('/api/client', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(clientData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Ошибка при сохранении клиента.');
+                }
+                return response.json();
+            })
+            .then(savedClient => {
+                alert('Клиент успешно сохранён!');
+                // Очищаем поля
+                document.getElementById('clientNameTextBox').value = '';
+                document.getElementById('clientAddressTextBox').value = '';
+                document.getElementById('clientPhoneTextBox').value = '';
+                // Показываем ID
+                const container = document.getElementById('clientSavedDataContainer');
+                container.textContent = `ID клиента: ${savedClient.id}`;
+            })
+            .catch(error => {
+                console.error('Ошибка:', error.message);
+                alert('Возникла ошибка при сохранении клиента.');
+            });
+        }
+
+        function getClientById() {
+            const clientId = document.getElementById('clientIdTextBox').value.trim();
+            const container = document.getElementById('clientDataContainer');
+
+            if (!clientId) {
+                alert('Введите ID клиента!');
+                return;
+            }
+
+            fetch(`/api/client/${clientId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Клиент не найден.');
+                    }
+                    return response.json();
+                })
+                .then(client => {
+                    let html = `<strong>Имя:</strong> ${client.name}<br>`;
+
+                    // Один адрес
+                    if (client.street) {
+                        html += `<strong>Адрес:</strong> ${client.street}<br>`;
+                    } else {
+                        html += `<strong>Адрес:</strong> не указан<br>`;
+                    }
+
+                    // Один телефон
+                    if (client.phoneNumber) {
+                        html += `<strong>Телефон:</strong> ${client.phoneNumber}<br>`;
+                    } else {
+                        html += `<strong>Телефон:</strong> не указан<br>`;
+                    }
+
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error.message);
+                    alert('Клиент с таким ID не найден.');
+                    container.textContent = '';
+                });
+        }
+
+        function getClients() {
+            const container = document.getElementById('clientsDataContainer');
+            fetch('/api/clients')
+                .then(response => response.json())
+                .then(clients => {
+                    if (clients.length === 0) {
+                        container.textContent = 'Клиенты не найдены.';
+                        return;
+                    }
+
+                    let html = '<ul style="list-style-type: none; padding: 0;">';
+                    clients.forEach(client => {
+                        html += `
+                            <li style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+                                <strong>ID:</strong> ${client.id}<br>
+                                <strong>Имя:</strong> ${client.name}<br>
+                                ${client.street
+                    ? `<strong>Адрес:</strong> ${client.street}`
+                    : '<strong>Адрес:</strong> нет данных'}<br>
+                ${client.phoneNumber
+                    ? `<strong>Телефон:</strong> ${client.phoneNumber}`
+                    : '<strong>Телефон:</strong> нет данных'}
+                </li>`;
+                    });
+                    html += '</ul>';
+                    container.innerHTML = html;
+                })
+                .catch(error => {
+                    console.error('Ошибка:', error.message);
+                    alert('Ошибка при получении списка клиентов.');
+                    container.textContent = '';
+                });
+        }
+    </script>
+
+    <style>
+        .form-container {
+            width: 400px;
+            margin: 0 auto;
+            padding: 20px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            height: 35px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            margin-bottom: 15px;
+        }
+
+        button {
+            width: 100%;
+            height: 40px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        pre, #clientDataContainer, #clientsDataContainer {
+            margin-top: 20px;
+            padding: 10px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+
+        .container {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+    </style>
+</head>
+
+<body>
+<div class="container">
+    <div class="form-container">
+        <h4>Создать нового клиента</h4>
+
+        <label>Введите имя пользователя:</label>
+        <input id="clientNameTextBox" type="text">
+
+        <label>Введите адрес пользователя:</label>
+        <input id="clientAddressTextBox" type="text">
+
+        <label>Введите телефон пользователя:</label>
+        <input id="clientPhoneTextBox" type="text">
+
+        <button onclick="saveClient()">Создать</button>
+
+        <pre id="clientSavedDataContainer"></pre>
+    </div>
+
+    <div class="form-container">
+        <h4>Получить данные о клиенте по ID</h4>
+
+        <label>Введите ID клиента:</label>
+        <input id="clientIdTextBox" placeholder="Введите ID клиента" type="text">
+
+        <button onclick="getClientById()">Получить</button>
+
+        <div id="clientDataContainer"></div>
+    </div>
+</div>
+
+<div class="form-container">
+    <h4>Вывести список клиентов</h4>
+
+    <button onclick="getClients()">Получить</button>
+
+    <div id="clientsDataContainer"></div>
+</div>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package ru.sinvic;
 
+import java.util.concurrent.TimeUnit;
 import ru.sinvic.lib.SensorDataBufferedWriterFake;
 import ru.sinvic.services.FakeSensorDataGenerator;
 import ru.sinvic.services.SensorDataProcessingFlowImpl;
@@ -9,8 +10,6 @@ import ru.sinvic.services.processors.SensorDataProcessorBuffered;
 import ru.sinvic.services.processors.SensorDataProcessorCommon;
 import ru.sinvic.services.processors.SensorDataProcessorErrors;
 import ru.sinvic.services.processors.SensorDataProcessorRoom;
-
-import java.util.concurrent.TimeUnit;
 
 public class Main {
     private static final String ALL_ROOMS_BINDING = "*";

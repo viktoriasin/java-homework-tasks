@@ -6,9 +6,9 @@ import java.util.List;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import ru.sinvic.base.AbstractHibernateTest;
-import ru.sinvic.crm.model.Address;
-import ru.sinvic.crm.model.Client;
-import ru.sinvic.crm.model.Phone;
+import ru.sinvic.crm.domain.Address;
+import ru.sinvic.crm.domain.Client;
+import ru.sinvic.crm.domain.Phone;
 
 @DisplayName("Демо работы с hibernate (с абстракциями) должно ")
 @SuppressWarnings("java:S125")

@@ -64,7 +64,9 @@ public class AppComponentsContainerImpl implements AppComponentsContainer {
     }
 
     private void containerAddAll(List<InitializedComponent> initializedComponents) {
-        for (InitializedComponent initializedComponent : initializedComponents) { // TODO: добавить какой-то инфраструктурный класс, который возьмет на себя хранение и поиск компонентов, например, ComponentRegistry
+        for (InitializedComponent initializedComponent :
+                initializedComponents) { // TODO: добавить какой-то инфраструктурный класс, который возьмет на себя
+            // хранение и поиск компонентов, например, ComponentRegistry
             appComponents.add(initializedComponent.componentObject());
             appComponentsByName.put(initializedComponent.componentName(), initializedComponent.componentObject());
         }
