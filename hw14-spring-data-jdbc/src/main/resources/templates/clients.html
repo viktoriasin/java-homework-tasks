@@ -81,15 +81,15 @@
                     let html = `<strong>Имя:</strong> ${client.name}<br>`;
 
                     // Один адрес
-                    if (client.address && client.address.street) {
-                        html += `<strong>Адрес:</strong> ${client.address.street}<br>`;
+                    if (client.street) {
+                        html += `<strong>Адрес:</strong> ${client.street}<br>`;
                     } else {
                         html += `<strong>Адрес:</strong> не указан<br>`;
                     }
 
                     // Один телефон
-                    if (client.phone && client.phone.number) {
-                        html += `<strong>Телефон:</strong> ${client.phone.number}<br>`;
+                    if (client.phoneNumber) {
+                        html += `<strong>Телефон:</strong> ${client.phoneNumber}<br>`;
                     } else {
                         html += `<strong>Телефон:</strong> не указан<br>`;
                     }

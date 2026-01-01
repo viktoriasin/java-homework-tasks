@@ -3,7 +3,9 @@ package ru.sinvic.crm.controllers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
+import ru.sinvic.crm.domain.Address;
 import ru.sinvic.crm.domain.Client;
+import ru.sinvic.crm.domain.Phone;
 import ru.sinvic.crm.dto.ClientCreateDto;
 import ru.sinvic.crm.service.DBServiceClient;
 
@@ -19,9 +21,13 @@ public class ClientApiController {
     }
 
     @GetMapping({"/api/client/{id}"})
-    protected Client getClientById(@PathVariable(name = "id") long id) {
+    protected ClientCreateDto getClientById(@PathVariable(name = "id") long id) {
         log.info("Received GET request for client with ID {}", id);
-        return dbServiceClient.getClient(id).orElse(null);
+        Client client = dbServiceClient.getClient(id);
+        Long clientId = client.id();
+        Address address = dbServiceClient.getClientAddress(clientId);
+        Phone phone = dbServiceClient.getClientPhone(clientId);
+        return new ClientCreateDto(clientId, client.name(), address.street(), phone.number());
     }
 
     @PostMapping("/api/client")

@@ -2,7 +2,6 @@ package ru.sinvic.crm.service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,12 +42,23 @@ public class DbServiceClientImpl implements DBServiceClient {
     }
 
     @Override
-    public Optional<Client> getClient(long id) {
+    public Client getClient(long id) {
         return transactionManager.doInReadOnlyTransaction(() -> {
-            var clientOptional = clientRepository.findById(id);
+            var clientOptional =
+                    clientRepository.findById(id).orElseThrow(() -> new RuntimeException("Client not found!"));
             log.info("client: {}", clientOptional);
             return clientOptional;
         });
+    }
+
+    @Override
+    public Phone getClientPhone(long clientId) {
+        return phoneRepository.findByClientId(clientId).orElseThrow(() -> new RuntimeException("Phone not found!"));
+    }
+
+    @Override
+    public Address getClientAddress(long clientId) {
+        return addressRepository.findByClientId(clientId).orElseThrow(() -> new RuntimeException("Address not found!"));
     }
 
     @Override
