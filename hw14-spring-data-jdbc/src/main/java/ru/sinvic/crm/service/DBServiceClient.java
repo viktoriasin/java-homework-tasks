@@ -1,9 +1,11 @@
 package ru.sinvic.crm.service;
 
-import java.util.List;
 import ru.sinvic.crm.domain.Address;
 import ru.sinvic.crm.domain.Client;
 import ru.sinvic.crm.domain.Phone;
+import ru.sinvic.crm.dto.ClientCreateDto;
+
+import java.util.List;
 
 public interface DBServiceClient {
 
@@ -14,6 +16,8 @@ public interface DBServiceClient {
     Address getClientAddress(long clientId);
 
     List<Client> findAll();
+
+    List<ClientCreateDto> findAllWithProfileInfo();
 
     Client saveClientWithProfileInfo(String name, String street, String phoneNumber);
 }

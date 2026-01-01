@@ -1,6 +1,6 @@
 
 <!DOCTYPE html>
-<html lang="ru" xmlns:th="http://www.thymeleaf.org">
+<html lang="ru">
 <head>
     <meta charset="utf-8">
     <title>Клиенты</title>
@@ -119,11 +119,11 @@
                             <li style="margin-bottom: 15px; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
                                 <strong>ID:</strong> ${client.id}<br>
                                 <strong>Имя:</strong> ${client.name}<br>
-                                ${client.address?.street
-                    ? `<strong>Адрес:</strong> ${client.address.street}`
+                                ${client.street
+                    ? `<strong>Адрес:</strong> ${client.street}`
                     : '<strong>Адрес:</strong> нет данных'}<br>
-                ${client.phone?.number
-                    ? `<strong>Телефон:</strong> ${client.phone.number}`
+                ${client.phoneNumber
+                    ? `<strong>Телефон:</strong> ${client.phoneNumber}`
                     : '<strong>Телефон:</strong> нет данных'}
                 </li>`;
                     });

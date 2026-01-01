@@ -1,7 +1,5 @@
 package ru.sinvic.crm.service;
 
-import java.util.ArrayList;
-import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,10 +7,16 @@ import org.springframework.stereotype.Service;
 import ru.sinvic.crm.domain.Address;
 import ru.sinvic.crm.domain.Client;
 import ru.sinvic.crm.domain.Phone;
+import ru.sinvic.crm.dto.ClientCreateDto;
 import ru.sinvic.crm.repository.AddressRepository;
 import ru.sinvic.crm.repository.ClientRepository;
 import ru.sinvic.crm.repository.PhoneRepository;
 import ru.sinvic.sessionmanager.TransactionManager;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -68,5 +72,31 @@ public class DbServiceClientImpl implements DBServiceClient {
             log.info("clientList:{}", clientList);
             return clientList;
         });
+    }
+
+    @Override
+    public List<ClientCreateDto> findAllWithProfileInfo() {
+        return transactionManager.doInReadOnlyTransaction(() -> {
+            List<Client> clients = clientRepository.findAll();
+
+            return clients.stream()
+                .map(client -> {
+                    String street = findStreetByClientId(client.id());
+                    String phoneNumber = findPhoneNumberByClientId(client.id());
+
+                    return new ClientCreateDto(client.id(), client.name(), street, phoneNumber);
+                })
+                .collect(Collectors.toList());
+        });
+    }
+
+    private String findStreetByClientId(Long clientId) {
+        Optional<Address> address = addressRepository.findByClientId(clientId);
+        return address.map(Address::street).orElse(null);
+    }
+
+    private String findPhoneNumberByClientId(Long clientId) {
+        Optional<Phone> phone = phoneRepository.findByClientId(clientId);
+        return phone.map(Phone::number).orElse(null);
     }
 }

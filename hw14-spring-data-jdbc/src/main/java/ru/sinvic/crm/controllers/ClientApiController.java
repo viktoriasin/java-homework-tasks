@@ -9,6 +9,8 @@ import ru.sinvic.crm.domain.Phone;
 import ru.sinvic.crm.dto.ClientCreateDto;
 import ru.sinvic.crm.service.DBServiceClient;
 
+import java.util.List;
+
 @RestController
 public class ClientApiController {
 
@@ -35,5 +37,11 @@ public class ClientApiController {
         log.info("Received POST request to create/update clientFromPostRequest " + clientCreateDto);
         return dbServiceClient.saveClientWithProfileInfo(
                 clientCreateDto.getName(), clientCreateDto.getStreet(), clientCreateDto.getPhoneNumber());
+    }
+
+    @GetMapping({"/api/clients"})
+    protected List<ClientCreateDto> getClients() {
+        log.info("Received GET request to show all clients");
+        return dbServiceClient.findAllWithProfileInfo();
     }
 }
